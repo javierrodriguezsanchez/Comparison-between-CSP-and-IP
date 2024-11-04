@@ -42,17 +42,3 @@ def solve(problem):
         }
     else:
         return { 'status': 'FAIL' }
-    # Mostrar la solución
-    if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
-        print(f"Total cost: {solver.Value(total_cost)}")
-        print("Tour:")
-        tour = []
-        for i in range(n):
-            for j in range(n):
-                if solver.Value(x[i][j]) == 1:
-                    tour.append((i, j))
-                    print(f"From {i} to {j}")
-        return tour, solver.Value(total_cost)
-    else:
-        print("No solution found.")
-        return None, None
