@@ -5,9 +5,18 @@ class Knapsack:
         self.weights = weights
         self.values = values
         self.capacity = capacity
+        self.properties = {
+            "capacity": capacity,
+            "weights": weights,
+            "values": values
+        }
+
+        sort_weights = sorted(self.weights)
+        sort_values = sorted(self.values)
+        self.key = f"Knapsack:\ncapacity={self.capacity}\nweights={sort_weights}\nvalues={sort_values})"
 
     def __str__(self):
-        return f"Knapsack:\ncapacity={self.capacity}\nweights={self.weights}\nvalues={self.values})"
+        return self.key
 
 def problem_builder(size, max_capacity):
     capacity = random.randint(1,max_capacity)
