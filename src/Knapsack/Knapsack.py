@@ -19,7 +19,6 @@ class Knapsack:
         return self.key
 
 def problem_builder(size, max_capacity):
-    capacity = random.randint(1,max_capacity)
-    weights = [random.randint(1,capacity) for _ in range(size)]
+    weights = [random.randint(1,max_capacity) for _ in range(size)]
     values = [random.randint(1,100) for _ in range(size)]
-    return Knapsack(capacity, weights, values)
+    return Knapsack(max_capacity, weights, values)

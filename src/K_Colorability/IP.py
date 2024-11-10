@@ -59,7 +59,7 @@ def solve(problem):
 
 
         return {
-            'x': colors[i],
+            'x': colors,
             'status': 'OK',
             'result': solver.Objective().Value(),
             'time': elapsed_time,
