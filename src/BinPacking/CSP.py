@@ -1,4 +1,5 @@
 from ortools.sat.python import cp_model
+import time
 
 def solve(problem):
     num_bins = len(problem.objects)  # Número máximo de bins necesarios en el peor de los casos
@@ -31,7 +32,9 @@ def solve(problem):
 
     # Crear el solver
     solver = cp_model.CpSolver()
+    start_time = time.time()
     status = solver.Solve(model)
+    elapsed_time = time.time() - start_time
 
     # Mostrar resultados
     if status == cp_model.OPTIMAL:
@@ -47,8 +50,12 @@ def solve(problem):
         return {
             'x': solution,
             'status': 'OK',
-            'result': solver.ObjectiveValue()
+            'result': solver.ObjectiveValue(),
+            'time': elapsed_time,
+            'method': "CSP"
         }
     else:
         return {'status': 'FAIL', 
-            'result': "FAIL"}
+            'result': "FAIL",
+            'time': elapsed_time,
+            'method': "CSP"}
