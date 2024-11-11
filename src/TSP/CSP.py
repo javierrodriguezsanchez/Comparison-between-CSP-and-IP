@@ -1,4 +1,5 @@
 from ortools.sat.python import cp_model
+import time
 
 def solve(problem):
     # Número de ciudades
@@ -31,14 +32,22 @@ def solve(problem):
 
     # Resolver el modelo
     solver = cp_model.CpSolver()
-    status = solver.Solve(model)
     
+    start_time = time.time()
+    status = solver.Solve(model)
+    elapsed_time = time.time() - start_time
 
     if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
         return {
             'x': [(i,j) for i in range(n) for j in range(n) if i!=j and solver.value(x[i][j])==1],
             'status': 'OK',
-            'result': solver.Value(total_cost)
+            'result': solver.Value(total_cost),
+            'time': elapsed_time,
+            'method': "CSP"
         }
     else:
-        return { 'status': 'FAIL' }
+        return {
+            'status': 'FAIL',
+            'time': elapsed_time,
+            'method': "CSP"
+        }

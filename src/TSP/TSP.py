@@ -4,6 +4,10 @@ class TSP:
     def __init__(self, vertices, aristas):
         self.vertices = vertices
         self.aristas = aristas
+        self.properties = {
+            "vertices": vertices,
+            "aristas": aristas
+        }
 
     def __str__(self):
         return f"Grafo de tamaño {self.vertices}\n{self.aristas}"
