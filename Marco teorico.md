@@ -7,7 +7,7 @@ Un problema de optimización consiste en encontrar una asignación de valores a 
 
 Estos problemas son fundamentales en diversas áreas, como la logística, la planificación de recursos, y la asignación de tareas. La naturaleza combinatoria de estos problemas a menudo implica que el número de soluciones posibles crezca exponencialmente con el tamaño del problema, lo que hace que los algoritmos exactos sean esenciales para garantizar soluciones óptimas. Sin embargo, debido a su complejidad, muchos problemas no se pueden resolver eficientemente utilizando métodos tradicionales, lo que resalta la necesidad de seguir investigando nuevas técnicas y enfoques. La eficiencia de los métodos computacionales utilizados para esto depende, en primer lugar, de cómo se construyen los modelos y, en segundo lugar, de los métodos utilizados. 
 
-Para esto podemos seguir tres estrategias diferentes: La satisfacción booleana, la programación lineal en enteros mixta y la programación de satisfacción de restricciones
+Para esto podemos seguir dos paradigmas diferentes: la programación entera y la programación de satisfacción de restricciones
 
 ## Programación en enteros
 
