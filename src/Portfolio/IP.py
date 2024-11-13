@@ -1,4 +1,5 @@
 from ortools.linear_solver import pywraplp
+import time
 
 def solve(problem):
     # Crear el solver
@@ -49,7 +50,9 @@ def solve(problem):
     solver.Minimize(M)
 
     # Resolver el problema
+    start_time = time.time()
     status = solver.Solve()
+    elapsed_time = time.time() - start_time
 
     # Mostrar resultados
     if status == pywraplp.Solver.OPTIMAL:
@@ -57,7 +60,11 @@ def solve(problem):
         return {
             'x': subsets,
             'status': 'OK',
-            'result': M.solution_value()
+            'result': M.solution_value(),
+            'time': elapsed_time,
+            'method': "IP"
         }
     else:
-        return { 'status': 'FAIL', 'result': None }
+        return { 'status': 'FAIL', 'result': None,
+            'time': elapsed_time,
+            'method': "IP" }

@@ -1,4 +1,5 @@
 from ortools.sat.python import cp_model
+import time
 
 def solve(problem):
     # Crear el modelo
@@ -18,14 +19,21 @@ def solve(problem):
 
     # Resolver el problema
     solver = cp_model.CpSolver()
+    start_time = time.time()
     status = solver.Solve(model)
+    elapsed_time = time.time() - start_time
 
     # Mostrar los resultados
     if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
         return {
             'x': [solver.Value(x_i) for x_i in x],
             'status': 'OK',
-            'result': sum(solver.Value(x[i]) for i in range(len(problem.sets)))
+            'result': sum(solver.Value(x[i]) for i in range(len(problem.sets))),
+            'time': elapsed_time,
+            'method': "CSP"
         }
     else:
-        return {'x': [], 'status': 'Error', 'result': None}
+        return {'status': 'FAIL', 
+            'result': None,
+            'time': elapsed_time,
+            'method': "CSP"}

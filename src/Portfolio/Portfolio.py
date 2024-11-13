@@ -5,6 +5,11 @@ class Portfolio:
         self.b = b
         self.n = n
         self.r = r
+        self.properties = {
+            "b": b,
+            "n": n,
+            "r": r
+        }
 
     def __str__(self):
         return f"<{self.b}\n{self.n}\n{self.r}>"

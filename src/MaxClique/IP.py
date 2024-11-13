@@ -1,4 +1,5 @@
 from ortools.linear_solver import pywraplp
+import time
 
 def solve(problem):
     # Crear un solver
@@ -18,14 +19,21 @@ def solve(problem):
     solver.Maximize(solver.Sum(x))
     
     # Resolver el modelo
+    start_time = time.time()
     status = solver.Solve()
+    elapsed_time = time.time() - start_time
     
     if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
         max_clique = [i for i in range(n) if x[i].solution_value() == 1]
         return {
             'x': max_clique,
             'status': 'OK',
-            'result': len(max_clique)
+            'result': len(max_clique),
+            'time': elapsed_time,
+            'method': "IP"
         }
     else:
-        return  { 'status': 'FAIL', 'result':None}
+        return  { 'status': 'FAIL',
+            'time': elapsed_time,
+            'method': "IP"
+        }

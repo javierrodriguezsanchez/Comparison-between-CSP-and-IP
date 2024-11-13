@@ -1,4 +1,5 @@
 from ortools.linear_solver import pywraplp
+import time
 
 # Definición del universo y los conjuntos
 universe = [1, 2, 3, 4, 5]
@@ -29,14 +30,22 @@ def solve(problem):
     solver.Minimize(solver.Sum(x[i] for i in range(len(problem.sets))))
 
     # Resolver el problema
+    start_time = time.time()
     status = solver.Solve()
+    elapsed_time = time.time() - start_time
 
     # Imprimir los resultados
     if status == pywraplp.Solver.OPTIMAL:
         return {
             'x': [x_i.solution_value() for x_i in x],
             'status': 'OK',
-            'result': solver.Objective().Value()
+            'result': solver.Objective().Value(),
+            'time': elapsed_time,
+            'method': "IP"
         }
     else:
-        return { 'status': 'FAIL', 'result': None }
+        return { 'status': 'FAIL', 
+            'result': None,
+            'time': elapsed_time,
+            'method': "IP"
+        }
