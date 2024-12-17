@@ -3,15 +3,15 @@
 
 # Marco teórico
 
-Un problema de optimización consiste en encontrar una asignación de valores a un conjunto de variables de forma que cumplan un conjunto de restricciones y maximicen o minimicen una función de costo. Estos se pueden clasificar de acuerdo con los los valores que pueden tener las variables que intervienen. Si los dominios de alguna de sus variables es el conjunto de los enteros estamos en un problema de optimización en enteros mixta. Dentro de la anterior categoría, se dice que se trabaja en enteros puros si todas sus variables son de dominio entero. Un caso de especial en la anterior categoría es cuando todas las variables son binarias (pueden adoptar solamente 0 o 1 como valores).
+Un problema de optimización consiste en encontrar una asignación de valores a un conjunto de variables de forma que cumplan un conjunto de restricciones y maximicen o minimicen una función de costo. Estos se pueden clasificar de acuerdo con los valores que pueden tener las variables que intervienen. Si los dominios de alguna de sus variables es el conjunto de los enteros estamos en un problema de optimización en enteros mixta. Dentro de la anterior categoría, se dice que se trabaja en enteros puros si todas sus variables son de dominio entero. Un caso de especial en la anterior categoría es cuando todas las variables son binarias (pueden adoptar solamente 0 o 1 como valores).
 
-Estos problemas son fundamentales en diversas áreas como logística, planificación, asignación de tareas y de forma general todas aquellos escenarios donde se disponen de con recursos limitados para resolver determinada situación. La naturaleza combinatoria de estos problemas a menudo implica que el número de soluciones posibles crezca exponencialmente con el tamaño del problema, lo que potencia la necesidad de descubrir nuevas técnicas y heurísticas para mejorar la eficiencia los algoritmos exactos que garanticen soluciones óptimas. Dicha eficiencia depende, en primer lugar, de cómo se construyen los modelos y, en segundo lugar, de los métodos computacionales utilizados. 
+Estos problemas son fundamentales en diversas áreas como logística, planificación, asignación de tareas y de forma general todos aquellos escenarios donde se disponen de con recursos limitados para resolver determinada situación. La naturaleza combinatoria de estos problemas a menudo implica que el número de soluciones posibles crezca exponencialmente con el tamaño del problema, lo que potencia la necesidad de descubrir nuevas técnicas y heurísticas para mejorar la eficiencia los algoritmos exactos que garanticen soluciones óptimas. Dicha eficiencia depende, en primer lugar, de cómo se construyen los modelos y, en segundo lugar, de los métodos computacionales utilizados. 
 
 Para esto podemos seguir dos paradigmas diferentes: la programación entera y la programación de satisfacción de restricciones
 
 ## Programación en enteros
 
-La programación en enteros es un conjunto de herramientas ampliamente utilizadas para resolver el siguiente problema: Cual es el máximo/mínimo que alcanza la función $c^Tx+d^Ty$ sujeto a las restricciones: $Ax≤p$, $By≤q$, $x≥0$, $y≥0$, $x∈ \R^n$, $y∈ \Z^m$.  
+La programación en enteros es un conjunto de herramientas ampliamente utilizadas para resolver el siguiente problema: Cuál es el máximo/mínimo que alcanza la función $c^Tx+d^Ty$ sujeto a las restricciones: $Ax≤p$, $By≤q$, $x≥0$, $y≥0$, $x∈ \R^n$, $y∈ \Z^m$.  
 
 ### Programación lineal como base de la programación en enteros
 
@@ -19,7 +19,7 @@ El paradigma antes mencionado es una extensión de la programación lineal, ya q
 
 El principal algoritmo utilizado para resolver un problema de optimización lineal es el método Simplex. Se centra en la resolución de los modelos en su llamada forma estándar: $min$ $c^Tx$ $s.a.$ $Ax=b$, $x≥0$. Es importante notar que todo modelo puede llevarse a forma estándar siguiendo los siguientes pasos:
 - Si el objetivo es maximizar $c^Tx$, este es equivalente a minimizar $-c^Tx$.
-- Si hay una restricción de la forma $a^Tx≤b$, entonces se puede introducir una variable nueva $x^h=b-a^Tx$, de forma que la restricción se puede escribir como $a^Tx+x^h=b$. Homológamente, si existe una restricción de la forma $a^Tx≥b$ se puede redefinir como $a^Tx-x^h=b$. Las nuevas variables se suelen llamar variables de holguras.
+- Si hay una restricción de la forma $a^Tx≤b$, entonces se puede introducir una variable nueva $x^h=b-a^Tx$, de forma que la restricción se puede escribir como $a^Tx+x^h=b$. Homólogamente, si existe una restricción de la forma $a^Tx≥b$ se puede redefinir como $a^Tx-x^h=b$. Las nuevas variables se suelen llamar variables de holguras.
 - Si una variable $x_i$ es irrestricta en signo, esta se puede expresar como la resta de dos variables positivas $x_i^+$ y $x_i^-$.
 
 Ejemplo:
@@ -78,7 +78,7 @@ $$2x_1+4x_2+20x_3=15$$
 
 $$x_1,x_2,x_3≥0$$
 
-La solución  de este problema es: $𝑥_1 = \frac54,𝑥_2 = \frac{25}{8},𝑥_3 = 0$. Sin embargo, si las variables involucradas fueran enteras, esta solución no es factible. La solución redondeada es: $𝑥_1 = 1,𝑥_2 = 3,𝑥_3 = 0$, con valor de la función objetivo igual a 50. Sin embargo, la solución $𝑥_1 = 2,𝑥_2 = 2,𝑥_3 = 0$, proporciona un valor de la función objetivo igual a 60. Por otra parte, la solución redondeada no satisface las restricciones del problema. Resulta por tanto de interés diseñar algoritmos que manejen la condición de las variables de ser enteras.
+La solución de este problema es: $𝑥_1 = \frac54,𝑥_2 = \frac{25}{8},𝑥_3 = 0$. Sin embargo, si las variables involucradas fueran enteras, esta solución no es factible. La solución redondeada es: $𝑥_1 = 1,𝑥_2 = 3,𝑥_3 = 0$, con valor de la función objetivo igual a 50. Sin embargo, la solución $𝑥_1 = 2,𝑥_2 = 2,𝑥_3 = 0$, proporciona un valor de la función objetivo igual a 60. Por otra parte, la solución redondeada no satisface las restricciones del problema. Resulta por tanto de interés diseñar algoritmos que manejen la condición de las variables de ser enteras.
 
 Una forma de extender la programación lineal a la programación entera podría plantearse como encontrar la menor cobertura convexa que contiene todas las asignaciones satisfacibles del problema. Si $S$ es el conjunto de asignaciones reales posibles del problema, $conv(S)$ se denota como la menor cobertura convexa del mismo. Ejemplo:
 
@@ -112,12 +112,12 @@ En la práctica, buscar la menor cobertura convexa es difícil e ineficiente. Si
 
 Todos los procedimientos basados en la explicación anteriormente planteada son conocidos como métodos de planos cortantes, y a las restricciones que se agregan se les denomina corte. Estos métodos comienzan con una relajación inicial de las restricciones de números enteros, lo que da como resultado una solución fraccionaria. Posteriormente, se añaden iterativamente cortes para reforzar la relajación hasta que se obtiene una solución entera.
 
-Existen varias técnicas para generar planos de corte, pero la mayoría se deriva del corte fundamental, y a partir de este se derivan los mas usados, como el corte de Gomory, el corte Primal Todo Entero y el corte  de Chvátal-Gomory.
+Existen varias técnicas para generar planos de corte, pero la mayoría se deriva del corte fundamental, y a partir de este se derivan los más usados, como el corte de Gomory, el corte Primal Todo Entero y el corte  de Chvátal-Gomory.
 
 
 ### Ramificación y acotación
 
-Sea un problema de optimización en enteros tal que, al resolver el problema relajado, una de sus variables enteras $x_i$ tenga un valor real $p$. Como su valor puede ser entero, se cumple que $x ≤ [p] ∨ x ≥ [p]+1$. Sabiendo esto, se pueden resolver 2 nuevos problemas de optimización, con cada uno con las restricciones del problema original adicionando las restricciones anteriores respectivamente a cada 1.  Finalmente, el óptimo será el menor (si se está minimizando; de lo contrario, será el mayor) de los óptimos de ambas ramas. El método descrito es conocido como Ramificación y acotación. 
+Sea un problema de optimización en enteros tal que, al resolver el problema relajado, una de sus variables enteras $x_i$ tenga un valor real $p$. Como su valor puede ser entero, se cumple que $x ≤ [p] ∨ x ≥ [p]+1$. Sabiendo esto, se pueden resolver 2 nuevos problemas de optimización, con cada uno con las restricciones del problema original adicionando las restricciones anteriores respectivamente a cada 1. Finalmente, el óptimo será el menor (si se está minimizando; de lo contrario, será el mayor) de los óptimos de ambas ramas. El método descrito es conocido como Ramificación y acotación. 
 
 Veámoslo en el siguiente ejemplo:
 
@@ -136,13 +136,13 @@ $$x_1, x_2 ∈ \Z$$
 
 Solución óptima: $x_1=2.67, x_2=4.16, Objective=6.83$
 
-Entonces, el problema se divide en dos  subproblemas distintos: uno con la restricción extra $x_1≤2$ (Caso 1) y otro con la restricción extra $x_1≥3$ (Caso 2).
+Entonces, el problema se divide en dos subproblemas distintos: uno con la restricción extra $x_1≤2$ (Caso 1) y otro con la restricción extra $x_1≥3$ (Caso 2).
 
 Para el caso 1 la solución óptima es: $x_1=2, x_2=3.5, Objective=5.5$
 
 Para el caso 2 esta es: $x_1=2, x_2=3.5, Objective=6.5$.
 
-En este caso se puede seguir ramificando por ambas vias. Específicamente, si ramificamos el caso 2, este se dividiría en el caso donde $x_2≥4$ y el caso donde $x_2≤3$.
+En este caso se puede seguir ramificando por ambas vías. Específicamente, si ramificamos el caso 2, este se dividiría en el caso donde $x_2≥4$ y el caso donde $x_2≤3$.
 
 Finalmente. Tras otras dos ramificaciones se puede llegar a que el óptimo es $x1=3, x2=3, Objective=6$.
 
@@ -218,7 +218,7 @@ Finalmente, usamos la equivalencia $(A∧B)∨C≡(A∨C)∧(B∨C)$
 
 $$∀x∀y((¬Q(y)∨ P(x))∧(¬R(x)∨ P(x)))$$
 
-Cuando los dominios de las variables son finitos, entonces cualquier formula de la lógica de predicados puede expresarse como una conjunción de clausulas de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. Un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. Sin embargo, estas dos propiedades no siempre pueden coexistir en todos los sistemas. Este dilema es especialmente relevante en el contexto de la teoría de Gödel, que establece que en cualquier sistema formal consistente que sea capaz de expresar la aritmética básica, incluye proposiciones que no pueden ser ni demostradas ni refutadas dentro del propio sistema. Lo cual significa que no puede ser completo.
+Cuando los dominios de las variables son finitos, entonces cualquier fórmula de la lógica de predicados puede expresarse como una conjunción de cláusulas de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. Un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. Sin embargo, estas dos propiedades no siempre pueden coexistir en todos los sistemas. Este dilema es especialmente relevante en el contexto de la teoría de Gödel, que establece que en cualquier sistema formal consistente que sea capaz de expresar la aritmética básica, incluye proposiciones que no pueden ser ni demostradas ni refutadas dentro del propio sistema. Lo cual significa que no puede ser completo.
 
 A la hora de encarar un problema de optimización usando lógica de predicados, es necesario añadir funciones, constantes y reglas que la involucren. Aunque la aritmética completa sea no decidible, hay "teorías" más pequeñas dentro de ella que sí lo son. Entre estas están la aritmética sin multiplicación y la teoría de orden lineal denso. Estas bastan para resolver cualquier modelo de optimización lineal.
 
@@ -248,7 +248,7 @@ $∃ z,x_1,x_2,x_3 ($
 
 $)$
 
-Luego, podríamos despejar $x_3$ en la cuarta restricción y sustituir en el resto, eliminando asi una variable del problema.
+Luego, podríamos despejar $x_3$ en la cuarta restricción y sustituir en el resto, eliminando así una variable del problema.
 
 $∃ z,x_1,x_2($
 - $z - 2x_1 - 3x_2 + (−2x_1 + x_2) = 0$ $∧$
@@ -298,29 +298,29 @@ Este procedimiento es conocido como método de eliminación de cuantificadores, 
 
 ### Davis-Putnam
 
-El algoritmo de Davis-Putnam(DP)  es un precursor de los algoritmos modernos para resolver SAT, el cual utiliza el principio de resolución. Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p ∨ Q_1$  y  $C_2 = ¬p ∨ Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)⟹ Q_2$ y $(p=0)⟹ Q_1$ se puede deducir $Q_1∨ Q_2$. Al aplicar iterativamente resolución, podemos deducir posibles valores de variables o una contradicción. En este último caso, se dice que el problema es insatisfacible. 
+El algoritmo de Davis-Putnam(DP) es un precursor de los algoritmos modernos para resolver SAT, el cual utiliza el principio de resolución. Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p ∨ Q_1$  y  $C_2 = ¬p ∨ Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)⟹ Q_2$ y $(p=0)⟹ Q_1$ se puede deducir $Q_1∨ Q_2$. Al aplicar iterativamente resolución, podemos deducir posibles valores de variables o una contradicción. En este último caso, se dice que el problema es insatisfacible. 
 
-Veamos el siguiente ejemplo: La siguiente formula sera satisfacible:
+Veamos el siguiente ejemplo: La siguiente formula será satisfacible:
 
 $$(a∨ b) ∧(a∨ ¬b) ∧ (¬a∨ c) ∧(¬a∨ ¬c)$$
 
-Al aplicar la regla de resolución entre las primeras dos cláusulas obtenemos la nueva restricción $(a ∨ a)$, la cual es lógicamente equivalente a $(a)$. Si aplicamos nuevamente resolución entre esta cláusula y las dos ultimas, deducimos $(c)$ y $(¬c)$. Si aplicamos resolución somos capaces de ver que llegamos a un absurdo, por lo que la formula nunca será satisfacible. 
+Al aplicar la regla de resolución entre las primeras dos cláusulas obtenemos la nueva restricción $(a ∨ a)$, la cual es lógicamente equivalente a $(a)$. Si aplicamos nuevamente resolución entre esta cláusula y las dos últimas, deducimos $(c)$ y $(¬c)$. Si aplicamos resolución somos capaces de ver que llegamos a un absurdo, por lo que la formula nunca será satisfacible. 
 
 El algoritmo de Davis-Putnam sirve como base para el desarrollo de todos los algoritmos utilizados para resolver el problema SAT, estableciendo un marco teórico importante para la lógica computacional.
 
 ### Davis-Logemann-Loveland
 
-Por otra parte, Davis-Logemann-Loveland(DLL/DPLL) se centra en asignar iterativamente valores a las variables y deshaciendo dichas asignaciones en caso de conflicto. Este algoritmo refina Davis-Putnam e introduce técnicas cruciales  como el backjumping y el aprendizaje de cláusulas. Se basa en tres hechos: 
+Por otra parte, Davis-Logemann-Loveland(DLL/DPLL) se centra en asignar iterativamente valores a las variables y deshaciendo dichas asignaciones en caso de conflicto. Este algoritmo refina Davis-Putnam e introduce técnicas cruciales como el *backjumping* y el aprendizaje de cláusulas. Se basa en tres hechos: 
 1- Todo literal puro (se dice puro si el literal opuesto no esta presente) es asignado como cierto. Ejemplo: $(a∨ b) ∧ (a∨ ¬c) ∧ (d∨ ¬c) ∧ (¬d∨ ¬b) ∧ (b∨ c) $. Aquí al no estar $¬a$ en ninguna cláusula, se puede asignar $a=1$ y reducir el problema a $(d∨ ¬c) ∧ (¬d∨ ¬b) ∧ (b∨ c) $.
-2- si una cláusula tiene todos sus literales negados excepto uno este ultimo debe ser cierto. Ejemplo $(a ∨ b ∨ c)∧(a∨¬b∨¬c)∧(¬a∨ b∨¬c) ∧(¬a∨ ¬b∨ c).$ Si se hace la asignación parcial $a=1, ¬c=1$, entonces la tercera clausula $(¬a∨ ¬b∨ c)$ solo puede cumplirse si $¬b=1$.
+2- si una cláusula tiene todos sus literales negados excepto uno este último debe ser cierto. Ejemplo $(a ∨ b ∨ c)∧(a∨¬b∨¬c)∧(¬a∨ b∨¬c) ∧(¬a∨ ¬b∨ c).$ Si se hace la asignación parcial $a=1, ¬c=1$, entonces la tercera clausula $(¬a∨ ¬b∨ c)$ solo puede cumplirse si $¬b=1$.
 3- Si todos los literales de una cláusula están negados, entonces la asignación hecha hasta dicho punto es falsa.
 
 El algoritmo tiene 5 etapas: 
 1- Preprocesamiento: Aquí se buscan todos los literales puros y se les asigna valor 1.
-2- ramificación: Aquí se asigna valor a un literal. Una buena heurística a la hora de decidir que literal escoger es Variable State Independent Decaying Sum(VSIDS), que consiste en asignar un numero a cada literal, el cual empieza siendo la cantidad de cláusulas en las que aparece, se divide entre una constante (usualmente 2) periódicamente y se le suma 1 cada vez que aparece en una cláusula conflicto.
-3- propagación unitaria (llamado en ingles Unit Propagation), en esta etapa se asignan valores a aquellos literales cuyo valor se pueden deducir. Es una de las mejoras clave del DPLL sobre su predecesor
+2- ramificación: Aquí se asigna valor a un literal. Una buena heurística a la hora de decidir que literal escoger es *Variable State Independent Decaying Sum*(VSIDS), que consiste en asignar un número a cada literal, el cual empieza siendo la cantidad de cláusulas en las que aparece, se divide entre una constante (usualmente 2) periódicamente y se le suma 1 cada vez que aparece en una cláusula conflicto.
+3- propagación unitaria (llamado en inglés *Unit Propagation*), en esta etapa se asignan valores a aquellos literales cuyo valor se pueden deducir. Es una de las mejoras clave del DPLL sobre su predecesor
 4- análisis de conflicto: aquí se busca agregar restricciones adicionales basada en la asignación parcial en caso de hallar una contradicción.
-5- retroceso (comúnmente llamado  Backtracking), deshace asignaciones hechas en caso de darse una contradicción, para asi explorar nuevos casos.
+5- retroceso (comúnmente llamado *Backtracking*), deshace asignaciones hechas en caso de darse una contradicción, para así explorar nuevos casos.
 
 
 **Ejemplo de SAT utilizando DPLL**
@@ -354,11 +354,11 @@ Haciendo $F$ satisfacible.
 
 ### Consistencia como forma de propagación de restricciones
 
-La mayoría de los algoritmos usados recaen en la propagación de restricciones (constraint propagation) y se realiza mediante la comprobación de consistencia entre los valores de las variables. Es necesario precisar que el término consistencia utilizado en esta sección es diferente al usado en lógica, refiriéndose a la reducción de dominio de variables a aquellos valores puedan pertenecer a una solución factible de un problema.
+La mayoría de los algoritmos usados recaen en la propagación de restricciones (*constraint propagation*) y se realiza mediante la comprobación de consistencia entre los valores de las variables. Es necesario precisar que el término consistencia utilizado en esta sección es diferente al usado en lógica, refiriéndose a la reducción de dominio de variables a aquellos valores puedan pertenecer a una solución factible de un problema.
 
-La forma mas básica de consistencia es la consistencia está la consistencia de nodo, que se cumple si y solo si todos los valores del dominio de una variable cumplen con todas las restricciones unarias. Supongamos que tenemos una variable $x ∈ \{1,2,...,50\}$. Si existe una restricción donde $x$ tiene que ser par, entonces al restringir el dominio de $x$ a $\{2,4,...,50\}$, se cumple la consistencia de nodo.
+La forma más básica de consistencia es la consistencia de nodo, que se cumple si y solo si todos los valores del dominio de una variable cumplen con todas las restricciones unarias. Supongamos que tenemos una variable $x ∈ \{1,2,...,50\}$. Si existe una restricción donde $x$ tiene que ser par, entonces al restringir el dominio de $x$ a $\{2,4,...,50\}$, se cumple la consistencia de nodo.
 
-También se habla de la consistencia de arco, alcanzada al eliminar aquellos valores $a$ de una variable $x$ si no existen valores $b$ de una variable $y$ tales que $(a,b)$ satisfagan a todas las restricciones entre $x$ y $y$. Uno de los algoritmos más utilizados para alcanzar dicho estado es el algoritmo AC-3, el cual guarda todos los pares ordenados de variables en una cola. Luego saca iterativamente cada uno de estos pares $<x,y>$ hasta que la cola se quede vacía, y comprueba la consistencia de arco para cada posible valor de $x$. Si un valor no cumple la consistencia de arcos, este valor es eliminado del dominio de $x$, y todos los pares de variables de la forma $<z,x>$ son reinsertados en la cola. El algoritmo tiene una complejidad de tiempo en el peor de los casos de $O(ed^3 )$, donde $e$ es la cantidad de pares y $d$ es el tamaño de dominio más grande. Tras aplicar la consistencia de arco, pueden surgir tres posibles escenarios: si todos los dominios de las variables quedan con exactamente 1 valor (en cuyo caso tenemos la asignación satisfacible), si un dominio queda vacío (en cuyo caso ocurriría una contradicción y se debe hacer backtrack en una asignación) o si al menos un dominio queda con más de un posible valor, en cuyo caso se le debe asignar un valor y volver a realizar consistencia de arco.
+También se habla de la consistencia de arco, alcanzada al eliminar aquellos valores $a$ de una variable $x$ si no existen valores $b$ de una variable $y$ tales que $(a,b)$ satisfagan a todas las restricciones entre $x$ y $y$. Uno de los algoritmos más utilizados para alcanzar dicho estado es el algoritmo AC-3, el cual guarda todos los pares ordenados de variables en una cola. Luego saca iterativamente cada uno de estos pares $<x,y>$ hasta que la cola se quede vacía, y comprueba la consistencia de arco para cada posible valor de $x$. Si un valor no cumple la consistencia de arcos, este valor es eliminado del dominio de $x$, y todos los pares de variables de la forma $<z,x>$ son reinsertados en la cola. El algoritmo tiene una complejidad de tiempo en el peor de los casos de $O(ed^3 )$, donde $e$ es la cantidad de pares y $d$ es el tamaño de dominio más grande. Tras aplicar la consistencia de arco, pueden surgir tres posibles escenarios: si todos los dominios de las variables quedan con exactamente 1 valor (en cuyo caso tenemos la asignación satisfacible), si un dominio queda vacío (en cuyo caso ocurriría una contradicción y se debe retroceder en una asignación) o si al menos un dominio queda con más de un posible valor, en cuyo caso se le debe asignar un valor y volver a realizar consistencia de arco.
 
 Otras formas de consistencia existentes son la consistencia de camino y la $k$-consistencia. La consistencia de camino considera no solo las restricciones binarias entre pares de variables, sino también las relaciones a través de secuencias más largas de variables. Aquí, $u$ es un valor consistente de $x$ si para todo $y$ existe un $w$ tal que dado cualquier secuencia de variables $a_1, a_2, ... a_n$, con $a_1=x$ y $a_n=y$ tenga la secuencia de valores $v_1, v_2, ... v_n$ con $v_1=u$ y $v_n=w$ de forma que el par $<v_i,v_{i+1}>$ cumpla con todas las restricciones binarias entre $a_i$ y $a_{i+1}$, con $1≤ i ≤ n$. Si bien la aplicación de la consistencia de camino garantiza un mayor nivel de consistencia que la consistencia del arco, todavía no es suficiente para resolver CSP en general. Esto significa que garantizando dicha consistencia, no todas las asignaciones garantizadas por esta son necesariamente soluciones satisfacible. Por otra parte, la $k$-consistencia, se logra al garantizar que cualquier asignación válida de valores a $k-1$ variables garantiza la posibilidad de asignación de un valor a otra cualquier otra variable. Se dice que se es fuertemente $k$-consistente si para todo $j<k$ se es $j$-consistente. Ambos tipos de consistencias son bastante costosos computacionalmente por lo que no es muy utilizado en la práctica en comparación con la consistencia de arco.
 
@@ -368,12 +368,12 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
 
 **Restricciones globales fundamentales:**
 
-- **All Different**: Esta restricción fuerza a que todos los valores de las variables sean diferentes entre si.
-- **Global Cardinality**: Estas restricciones controlan la cantidad de veces que ciertos valores pueden aparecer en un conjunto de variables. Por ejemplo, global_cardinality permite especificar cuántas veces debe aparecer cada valor en un array de variables.
+- **All Different**: Esta restricción fuerza a que todos los valores de las variables sean diferentes entre sí.
+- **Global Cardinality**: Estas restricciones controlan la cantidad de veces que ciertos valores pueden aparecer en un conjunto de variables. Por ejemplo, global_cardinality permite especificar cuántas veces debe aparecer cada valor en un *array* de variables.
 - **Inverse**: Esta restricción asegura que si un valor se asigna a una variable, entonces otro conjunto de variables debe reflejar esa asignación en un orden inverso. Es útil para problemas donde la relación entre las variables es crucial.
 - **Table**: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar relaciones complejas entre variables.
 - **Circuit**: Asegura que un conjunto de variables forma un circuito, lo cual es esencial en problemas como el Traveling Salesman Problem. Esta restricción garantiza que no haya subcircuitos y que todos los nodos sean visitados.
 - **Lexicographic Order (Lex)**: Se utiliza para imponer un orden lexicográfico entre dos o más secuencias de variables, lo que puede ser útil en problemas donde el orden relativo es importante.
-- **Element**: Esta restricción permite acceder a los elementos de un array mediante índices definidos por otras variables, facilitando la modelización de problemas donde se necesita seleccionar entre múltiples opciones.
+- **Element**: Esta restricción permite acceder a los elementos de un *array* mediante índices definidos por otras variables, facilitando la modelización de problemas donde se necesita seleccionar entre múltiples opciones.
 - **Cumulative**: Se utiliza para gestionar recursos limitados en el tiempo, asegurando que las demandas no excedan la capacidad disponible en cada momento.
 - **Regular**: Permite definir restricciones sobre cadenas de longitud variable y es útil en problemas relacionados con autómatas y gramáticas formales.
