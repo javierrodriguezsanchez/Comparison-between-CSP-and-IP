@@ -78,7 +78,7 @@ $$2x_1+4x_2+20x_3=15$$
 
 $$x_1,x_2,x_3≥0$$
 
-La solución de este problema es: $𝑥_1 = \frac54,𝑥_2 = \frac{25}{8},𝑥_3 = 0$. Sin embargo, si las variables involucradas fueran enteras, esta solución no es factible. La solución redondeada es: $𝑥_1 = 1,𝑥_2 = 3,𝑥_3 = 0$, con valor de la función objetivo igual a 50. Sin embargo, la solución $𝑥_1 = 2,𝑥_2 = 2,𝑥_3 = 0$, proporciona un valor de la función objetivo igual a 60. Por otra parte, la solución redondeada no satisface las restricciones del problema. Resulta por tanto de interés diseñar algoritmos que manejen la condición de las variables de ser enteras.
+La solución de este problema es: $x_1 = \frac54,x_2 = \frac{25}{8},x_3 = 0$. Sin embargo, si las variables involucradas fueran enteras, esta solución no es factible. La solución redondeada es: $x_1 = 1,x_2 = 3,x_3 = 0$, con valor de la función objetivo igual a 50. Sin embargo, la solución $x_1 = 2,x_2 = 2,x_3 = 0$, proporciona un valor de la función objetivo igual a 60. Por otra parte, la solución redondeada no satisface las restricciones del problema. Resulta por tanto de interés diseñar algoritmos que manejen la condición de las variables de ser enteras.
 
 Una forma de extender la programación lineal a la programación entera podría plantearse como encontrar la menor cobertura convexa que contiene todas las asignaciones satisfacibles del problema. Si $S$ es el conjunto de asignaciones reales posibles del problema, $conv(S)$ se denota como la menor cobertura convexa del mismo. Ejemplo:
 
