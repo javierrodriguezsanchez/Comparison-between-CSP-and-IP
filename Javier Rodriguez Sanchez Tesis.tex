@@ -1,5 +1,4 @@
-
-\documentclass[runningheads]{llncs}
+\documentclass[12pt]{report}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
@@ -7,6 +6,7 @@
 \usepackage{amsmath} 
 \usepackage[spanish]{babel}
 \usepackage[T1]{fontenc}
+\usepackage{tocloft} % Paquete para personalizar la tabla de contenidos
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhf{}
@@ -18,42 +18,45 @@
 % to display URLs in blue roman font according to Springer's eBook style:
 % \renewcommand\UrlFont{\color{blue}\rmfamily}
 
+% Configuración de la tabla de contenidos
+\setcounter{secnumdepth}{3} % Numerar hasta subsubsecciones
+\setcounter{tocdepth}{3}    % Incluir hasta subsubsecciones en el índice
+
+
 \begin{document}
 %
-\title{An\'alisis Comparativo entre la programación entera y la programación de satisfacción de retricciones}
+\title{Análisis Comparativo entre la programación entera y la programación de satisfacción de restricciones}
 
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
 \author{Javier Rodríguez Sánchez}
-%
-\authorrunning{Universidad de la Habana, Facultad de Matemática y Computación }
-% First names are abbreviated in the running head.
-% If there are more than two authors, 'et al.' is used.
-%
-\institute{Facultad de Matemática y Computación, Universidad de la Habana\\
-\inst{1}\email{javier.rs0808@gmail.com}}
-%
+
 \maketitle 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                            ABSTRACT                         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 The abstract should briefly summarize the contents of the paper in
 15--250 words.
-\keywords{Programación de Satisfacción de Restricciones \and Programación entera.}
+
 \end{abstract}
 %
 
-%\tableofcontents
+\newpage
 
+% Tabla de contenidos
+\tableofcontents
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                        INTRODUCCIÓN                         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introducción}
+\chapter{Introducción}
 
-La formulación de problemas reales en diversos campos de estudio frecuentemente se encuentra condicionada por la necesidad de satisfacer un conjunto de restricciones. Estas limitaciones, que pueden ser tanto naturales como impuestas por el contexto del problema, son fundamentales para el desarrollo de soluciones efectivas. Por ejemplo, en la naturaleza, la velocidad de la luz establece un límite inquebrantable para todo objeto en movimiento; mientras que, en biología, la configuración nativa de una proteína depende de combinaciones específicas de aminoácidos. En el ámbito matemático, especialmente en teoría de conjuntos y lógica, se han desarrollado lenguajes y herramientas que permiten representar y procesar estas restricciones a través de ecuaciones e inecuaciones. \\
+La formulación de problemas reales en diversos campos de estudio frecuentemente se encuentra condicionada por la necesidad de satisfacer un conjunto de restricciones. Estas limitaciones, que pueden ser tanto naturales como impuestas por el contexto del problema, son fundamentales para el desarrollo de soluciones efectivas. Por ejemplo, en la naturaleza, la velocidad de la luz establece un límite inquebrantable para todo objeto en movimiento; mientras que en biología, la configuración nativa de una proteína depende de combinaciones específicas de aminoácidos. En el ámbito matemático, especialmente en teoría de conjuntos y lógica, se han desarrollado lenguajes y herramientas que permiten representar y procesar estas restricciones a través de ecuaciones e inecuaciones. \\
 
 La mayoría de los problemas prácticos que requieren solución son problemas discretos con restricciones, donde las variables están limitadas a dominios finitos. Sin embargo, la cantidad de variables involucradas puede ser considerable, lo que genera combinaciones exponenciales y, por ende, una explosión combinatoria (un crecimiento rápido e incontrolado en el número de posibles combinaciones) en la búsqueda de soluciones viables. La versión más compleja de estos problemas se agrupa bajo el concepto de optimización discreta, que pertenece a la categoría NP-completa. Esta complejidad ha impulsado el desarrollo de técnicas computacionales para mejorar la eficiencia en su resolución.  \\
 
@@ -61,14 +64,18 @@ La programación entera(IP) se erige como una herramienta crucial en la resoluci
 
 Además, en las últimas décadas, el campo de la Inteligencia Artificial (IA) ha visto emerger nuevas formas de modelar problemas de satisfacción de restricciones, especialmente dentro del ámbito de la lógica computacional. Esto ha dado lugar a la programación de satisfacción de restricciones (CSP), que se presenta como una vía alternativa a la programación entera.  \\
 
-La presente investigación propone comparar los paradigmas anteriormente mencionados, identificando diferencias clave en términos de eficiencia y aplicabilidad a la hora de atacar diferentes clases de problemas discretos. A la vez, se propone identificar las fortalezas y desventajas que presenta cada uno.  \\
+La presente investigación propone identificar qué paradigma utilizar para ganar eficiencia y aplicabilidad en las diferentes clases de problemas discretos, dado las especificaciones que caracterizan a dicha clase.  \\
+
+El objetivo general de esta tesis es comparar la eficiencia temporal de los paradigmas de programación entera y programación de satisfacción de restricciones en la solución de diferentes clases de problemas discretos. Para esto, se seleccionarán diferentes clases de problemas discretos que permitan evidenciar las diferencias entre ambos paradigmas, de los cuales se identificarán rasgos significativos que puedan afectar el rendimiento en uno u otro paradigma. Luego, se propondrán dos modelaciones diferentes, una como un problema de satisfacción de restricciones y otra como modelo de optimización entera. Se propone luego simular diferentes especificaciones de las clases de problemas para poder comparar los resultados de ambos modelos. Una vez con los resultados se buscará una correlación entre las características presentes en el problema y el rendimiento temporal.\\
+
+La tesis consta de otros cuatro capítulos. El capítulo 2 se presentará en marco teórico de ambos paradigmas, empezando por la programación entera en la sección 2.1 y la programación de satisfacción de restricciones en la sección 2.2. El capítulo 3 se hará referencia a las clases de problemas analizadas, y a los medios de implementación que fueron utilizados. Los resultados alcanzados serán analizados en el capítulo 4, y las conclusiones serán exhibidas en el capitulo 5. Además, al final de la tesis se podrá ver los modelos que fueron utilizados por ambos paradigmas en la implementación de las soluciones.\\
 
 Esta tesis se desarrolla en la Facultad de Matemática y Computación de la Universidad de La Habana  \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                        MARCO TEÓRICO                        %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Marco Teórico}
+\chapter{Marco Teórico}
 
 Un problema de optimización consiste en encontrar una asignación de valores a un conjunto de variables de forma que cumplan un conjunto de restricciones y maximicen o minimicen una función de costo. Estos se pueden clasificar de acuerdo con los valores que pueden tener las variables que intervienen. Si los dominios de alguna de sus variables es el conjunto de los enteros estamos en un problema de optimización en enteros mixta. Dentro de la anterior categoría, se dice que se trabaja en enteros puros si todas sus variables son de dominio entero. Un caso de especial en la anterior categoría es cuando todas las variables son binarias (pueden adoptar solamente 0 o 1 como valores).
 
@@ -76,12 +83,12 @@ Estos problemas son fundamentales en diversas áreas como logística, planificac
 
 Para esto se puede seguir dos paradigmas diferentes: la programación entera y la programación de satisfacción de restricciones.
 
-\subsection{Programación en enteros}
+\section{Programación en enteros}
 
 La programación en enteros es un conjunto de herramientas ampliamente utilizadas para resolver el siguiente problema: Cuál es el máximo/mínimo que alcanza la función $c^Tx+d^Ty$ sujeto a las restricciones: $Ax\leq p$, $By\leq q$, $x\geq 0$, $y\geq 0$, $x\in \mathbb{R} ^n$, $y\in \mathbb{Z}^m$.  
 
 
-\subsubsection{Programación lineal como base de la programación en enteros\\}
+\subsection{Programación lineal como base de la programación en enteros\\}
 
 El paradigma antes mencionado es una extensión de la programación lineal, ya que, de forma general, resolver un problema de programación en enteros requiere resolver uno o varios problemas lineales.\\
 
@@ -126,7 +133,7 @@ Una vez con la solución factible básica inicial, el algoritmo compara las eval
 
 Aunque el método Simplex tiene un tiempo de ejecución exponencial en el peor de los casos, en la práctica, es muy eficiente y rápido para la mayoría de los problemas reales, siendo la herramienta por excelencia para su solución. 
 
-\subsubsection{Planos cortantes\\}
+\subsection{Planos cortantes\\}
 
 En el siguiente problema de optimización:
 
@@ -166,7 +173,7 @@ Todos los procedimientos basados en la explicación anteriormente planteada son 
 Existen varias técnicas para generar planos de corte, pero la mayoría se deriva del corte fundamental, y a partir de este se derivan los más usados, como el corte de Gomory, el corte Primal Todo Entero y el corte  de Chvátal-Gomory.\\
 
 
-\subsubsection{Ramificación y acotación\\}
+\subsection{Ramificación y acotación\\}
 
 Sea un problema de optimización en enteros tal que, al resolver el problema relajado, una de sus variables enteras $x_i$ tenga un valor real $p$. Como su valor puede ser entero, se cumple que $x \leq  [p] \lor  x \geq  [p]+1$. Sabiendo esto, se pueden resolver 2 nuevos problemas de optimización, con cada uno con las restricciones del problema original adicionando las restricciones anteriores respectivamente a cada 1. Finalmente, el óptimo será el menor (si se está minimizando; de lo contrario, será el mayor) de los óptimos de ambas ramas. El método descrito es conocido como Ramificación y acotación. \\
 
@@ -192,7 +199,7 @@ En este caso se puede seguir ramificando por ambas vías. Específicamente, si r
 
 Ramificación y acotación permite explorar diferentes posibilidades de solución dividiendo el problema en subproblemas más manejables, mientras que los planos cortantes ayudan a eliminar soluciones no viables, mejorando la eficiencia del proceso de búsqueda. Ambas metodologías, aunque pueden ser aplicadas por separado, se complementan eficazmente en la búsqueda soluciones óptimas. Dicha combinación es conocida como \textit{Branch and Cut}. 
 
-\subsubsection{Uso de variables binarias para la modelación de problemas\\}
+\subsection{Uso de variables binarias para la modelación de problemas\\}
 
 
 Es fundamental identificar qué problemas pueden ser representados como problemas de programación entera. Para ello, resulta interesante explorar cómo diversas restricciones de la lógica de predicados pueden ser modeladas en este contexto. Al comprender esta relación, se puede traducir enunciados lógicos complejos en formulaciones matemáticas que se pueden resolver mediante técnicas de optimización discreta, ampliando así el alcance de los problemas que podemos abordar.\\
@@ -226,7 +233,7 @@ Una forma de analizar un problema de optimización es como un problema de satisf
 
 La programación de satisfacción de restricciones (CSP) es aquella especializada en resolver este tipo de problemas. Algunas de las operaciones (por ejemplo, la ramificación) utilizadas son similares a las de IP, y tiene muchas características en común con los procedimientos de reducción que ahora se usan comúnmente para preprocesar modelos. Este enfoque no está concebido como un método de optimización propiamente, aunque se puede adaptar a él haciendo que el objetivo, con límites cada vez más estrictos, sea una restricción.
 
-\subsubsection{SAT como base de la satisfacción de restricciones\\}
+\subsection{SAT como base de la satisfacción de restricciones\\}
 
 No siempre es obvio, con un solo problema, hasta qué punto se utiliza la lógica o cuando se utilizan métodos más analíticos. Sin embargo, hay una gran ventaja en poder moverse entre los dos y reconocer las relaciones entre ellos. En este sentido, la programación entera y la lógica son simbióticas.\\
 
@@ -322,7 +329,7 @@ Concluyendo que $-2\leq  z \leq  8$. Y como el objetivo es maximizar. Se toma $z
 
 Este procedimiento es conocido como método de eliminación de cuantificadores, que si bien no es utilizado actualmente por existir soluciones mucho más eficientes dentro de la programación lineal como el método Simplex, teóricamente demuestra que la programación lineal es una teoría decidible.
 
-\subsubsection{Davis-Putnam\\}
+\subsection{Davis-Putnam\\}
 
 El algoritmo de Davis-Putnam(DP) es un precursor de los algoritmos modernos para resolver SAT, el cual utiliza el principio de resolución. Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2$ y $(p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Al aplicar iterativamente resolución, podemos deducir posibles valores de variables o una contradicción. En este último caso, se dice que el problema es insatisfacible.\\ 
 
@@ -334,7 +341,7 @@ Al aplicar la regla de resolución entre las primeras dos cláusulas se obtiene 
 El algoritmo de Davis-Putnam sirve como base para el desarrollo de todos los algoritmos utilizados para resolver el problema SAT, estableciendo un marco teórico importante para la lógica computacional.
 
 
-\subsubsection{Davis-Logemann-Loveland\\}
+\subsection{Davis-Logemann-Loveland\\}
 
 Por otra parte, Davis-Logemann-Loveland(DLL/DPLL) se centra en asignar iterativamente valores a las variables y deshaciendo dichas asignaciones en caso de conflicto. Este algoritmo refina Davis-Putnam e introduce técnicas cruciales como el \textit{backjumping} y el aprendizaje de cláusulas. Se basa en tres hechos: 
 \begin{enumerate}
@@ -355,7 +362,7 @@ El algoritmo tiene 5 etapas:
 
 \textbf{Ejemplo de SAT utilizando DPLL}\\
 
-Considerese la siguiente fórmula en FNC:
+Considérese la siguiente fórmula en FNC:
 $F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)\land(D\lor \neg C)\land(\neg A\lor D)$\\
 
 Paso 1: Preprocesamiento
@@ -380,7 +387,7 @@ $A=false, B=false,C=true, D=true$\\
 
 Haciendo $F$ satisfacible.
 
-\subsubsection{Consistencia como forma de propagación de restricciones\\}
+\subsection{Consistencia como forma de propagación de restricciones\\}
 
 La mayoría de los algoritmos usados recaen en la propagación de restricciones (\textit{constraint propagation}) y se realiza mediante la comprobación de consistencia entre los valores de las variables. Es necesario precisar que el término consistencia utilizado en esta sección es diferente al usado en lógica, refiriéndose a la reducción de dominio de variables a aquellos valores puedan pertenecer a una solución factible de un problema.\\
 
@@ -390,7 +397,7 @@ También se habla de la consistencia de arco, alcanzada al eliminar aquellos val
 
 Otras formas de consistencia existentes son la consistencia de camino y la $k$-consistencia. La consistencia de camino considera no solo las restricciones binarias entre pares de variables, sino también las relaciones a través de secuencias más largas de variables. Aquí, $u$ es un valor consistente de $x$ si para todo $y$ existe un $w$ tal que dado cualquier secuencia de variables $a_1, a_2, ... a_n$, con $a_1=x$ y $a_n=y$ tenga la secuencia de valores $v_1, v_2, ... v_n$ con $v_1=u$ y $v_n=w$ de forma que el par $<v_i,v_{i+1}>$ cumpla con todas las restricciones binarias entre $a_i$ y $a_{i+1}$, con $1\leq  i \leq  n$. Si bien la aplicación de la consistencia de camino garantiza un mayor nivel de consistencia que la consistencia del arco, todavía no es suficiente para resolver CSP en general. Esto significa que garantizando dicha consistencia, no todas las asignaciones garantizadas por esta son necesariamente soluciones satisfacible. Por otra parte, la $k$-consistencia, se logra al garantizar que cualquier asignación válida de valores a $k-1$ variables garantiza la posibilidad de asignación de un valor a otra cualquier otra variable. Se dice que se es fuertemente $k$-consistente si para todo $j<k$ se es $j$-consistente. Ambos tipos de consistencias son bastante costosos computacionalmente por lo que no es muy utilizado en la práctica en comparación con la consistencia de arco.\\
 
-\subsubsection{Restricciones globales de la programación de satisfacción de restricciones\\}
+\subsection{Restricciones globales de la programación de satisfacción de restricciones\\}
 
 A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, En la programación por restricciones, los modelos suelen expresarse en forma de predicados, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. Dichos predicados suelen depender del software utilizado, y en muchos casos se da la oportunidad al usuario de definir predicados locales. Pero de forma general existen restricciones globales que suelen ser semánticamente redundantes y permiten filtrar el dominio de las variables.
 
@@ -413,14 +420,14 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                  EXPLICACIÓN DEL CÓDIGO                     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implementación}
+\chapter{Implementación}
 Describir brevemente como se desarrollo el proyecto, tanto en hardware como en software.
-\section{Resultados}
+\chapter{Resultados}
 Presentar las pruebas que apoyan tales resultados cumplidos de los objetivos, sea en forma de figuras, tablas o en el mismo texto. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                       CONCLUSIONES                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusiones}
+\chapter{Conclusiones}
 Se establece las conclusiones de cada asunto investigado, implicaciones para la teoría y resultados de las
 experiencias. Estos siempre estarán en relaciona los objetivos generales y específicos.
 
@@ -437,7 +444,7 @@ Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
 \bibitem{ref_lncs1}
 Author, F., Author, S.: Title of a proceedings paper. In: Editor,
 F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
-Springer, Heidelberg (2016). \doi{10.10007/1234567890}
+Springer, Heidelberg (2016).
 
 \bibitem{ref_book1}
 Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
@@ -448,7 +455,6 @@ Author, A.-B.: Contribution title. In: 9th International Proceedings
 on Proceedings, pp. 1--2. Publisher, Location (2010)
 
 \bibitem{ref_url1}
-LNCS Homepage, \url{http://www.springer.com/lncs}. Last accessed 4
 Oct 2017
 \end{thebibliography}
 
