@@ -1,13 +1,13 @@
-La implementación realizada consiste en una comparación objetiva entre los paradigmas IP y CSP mediante las bibliotecas de ortools en python *pywraplp* y *cp_model* respectivamente. Para ello, se abordan diferentes clases de problemas, simulando casos específicos y resolviéndolos mediante ambos enfoques. Una vez completado el proceso, se evalúa el rendimiento temporal de los solucionadores y se lleva a cabo un análisis detallado de los resultados obtenidos.
-
-Las clases de problemas analizadas son: 
-- *Bin Packing*: Dado una cantidad de objetos de diferentes tamaños determinar el menor número de agrupaciones que se pueden formar de forma que el tamaño total de un grupo no exceda cierto valor.
-- *K-Coloración*: determinar el número cromático de un grafo.
-- **Max-Clique*: hallar el mayor clique en un grafo
-- *Knapsack Problem*: Se tienen varios objetos con diferentes pesos y valores. Encontrar la combinación de objetos de mayor valor tal que la suma de sus pesos no exceda determinado número 
+Para llevar a cabo la comparación entre ambos paradigmas fueron utilizadas las siguientes clases de problemas:
+- *Bin Packing*: Dado una cantidad de objetos de diferentes tamaños determinar el menor número de agrupaciones que se pueden formar tal que el la suma total dentro de un grupo no exceda cierto valor.
+- *K-Coloración*: determinar el número cromático de un grafo, en otras palabras, la menor cantidad de colores necesarios para colorear sus vértices sin que dos vertices vecinos (unidos por una arista) tengan el mismo color.
+- **Max-Clique*: hallar el mayor conjunto de vertices de un grafo tal que para todo par de vertices hay una arista que los une.
 - *Portfolio*: Dado un conjunto, determinar la combinación de cierta cantidad de subconjuntos de determinado tamaño que minimice la intersección 2 a 2 de dichos conjuntos.
-- *Set Cover*: Dado un conjunto y una lista de subconjuntos de este encontrar la menor candida entre los subconjuntos cuya unión resulte en el conjunto original.
-- *Traveling Salesman Problem*: Dado un grafo ponderado completo, encontrar el ciclo de Halminton de menor tamaño.
-- *Vehicle Routing Problem*: 
-- *Job Shop Problem*:
-Para cada problema, las implementaciones se llevaron a cabo en dos bibliotecas de ortools en python: pywraplp y cp_model.
+- *Set Cover*: Dado un conjunto y una lista de subconjuntos de este encontrar la menor cantidad entre los subconjuntos cuya unión resulte en el conjunto original.
+- *Traveling Salesman Problem*: Dado un grafo ponderado completo, encontrar el ciclo simple que pase por todos los nodos tal que la suma de aristas sea mínima.
+- *Vehicle Routing Problem*:  Hallar el conjunto óptimo de rutas para una flota de vehículos que debe satisfacer las demandas de un conjunto dado de clientes
+- *Job Shop Problem*: Hallar la mínima cantidad de tiempo que hace falta para realizar un conjunto de trabajos sin que estos se solapen. Cada trabajo esta caracterizado por un conjunto de tareas, las cuales deben hacerse en máquinas específicas.
+
+Para la modelación de cada problema, se realizó un modelo por cada paradigma. Para esto se utilizó Ortools, que es un paquete de software de código abierto desarrollado por Google para resolver problemas complejos de optimización. Ortools facilita la comparación entre ambos paradigmas al ofrecer un entorno flexible y accesible para el modelado y la resolución de problemas. Para resolver los modelos de programación entera se usó la biblioteca pywraplp, mientras que para resolver los modelos de la programación de satisfacción de  restricciones se utilizó cp_model.
+
+Para cada clase de problema, una vez implementada la solución genérica en ambos paradigmas, se simulan diferentes instancias de la clase y se guardan los tiempos empleados. Una vez con los tiempos medidos, se agrupan los problemas según propiedades a analizar, y se investiga una posible correlación entre el desempeño de cada solución y la propiedad.
