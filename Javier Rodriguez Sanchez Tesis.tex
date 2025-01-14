@@ -214,7 +214,7 @@ En este contexto, el problema de satisfacibilidad booleana (SAT) emerge como un 
 
 Todo lo anteriormente planteado permite resaltar la gran importancia que cobra la lógica en este tipo de problemas, pues es la que permite deducir enunciados a partir de otros en función de las reglas de deducción que lo conforman. Más específicamente, la lógica proposicional y la lógica de predicados proporcionan un marco teórico robusto para abordar los problemas SAT.\\
 
-Como forma general, todo problema SAT se representa en su Forma Normal Conjuntiva(CNF) debido a las ventajas que ésta posee, y todos los cuantificadores se sitúan al principio de la expresión (\textit{Prenex Normal Form}). Es necesario señalar que toda expresión válida de la lógica de predicados puede llevarse a dicha forma.
+Como forma general, todo problema SAT se representa como una conjunción de disyunciones de variables proposicionales o sus negaciones, y todos los cuantificadores se sitúan al principio de la expresión (\textit{Prenex Normal Form}). Se habla de un literal a variable proposicional o su negación, las disyunciones de literales se llaman cláusulas y una conjunción de cláusulas es conocida como Forma Normal Conjuntiva(CNF). Es necesario señalar que toda expresión válida de la lógica de predicados puede llevarse a dicha forma.
 
 Ejemplo:
 
@@ -232,7 +232,7 @@ $$\forall x\forall y((\neg Q(y)\lor  P(x))\land(\neg R(x)\lor  P(x)))$$\\
 
 Cuando los dominios de las variables son finitos, entonces cualquier fórmula de la lógica de predicados puede expresarse como una conjunción de cláusulas de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. \\
 
-Un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. Sin embargo, estas dos propiedades no siempre pueden coexistir en todos los sistemas. Este dilema es especialmente relevante en el contexto de la teoría de Gödel, que establece que en cualquier sistema formal consistente que sea capaz de expresar la aritmética básica, incluye proposiciones que no pueden ser ni demostradas ni refutadas dentro del propio sistema. Lo cual significa que no puede ser completo.\\
+Un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. Sin embargo, estas dos propiedades no siempre pueden coexistir en todos los sistemas. Este dilema es especialmente relevante en el contexto de la teoría de Gödel, que establece que en cualquier sistema formal consistente que sea capaz de expresar la aritmética básica, que contenga dominio infinito, principio de inducción y todas las operaciones elementales; incluye proposiciones que no pueden ser ni demostradas ni refutadas dentro del propio sistema. Lo cual significa que no puede ser completo.\\
 
 A la hora de encarar un problema de optimización usando lógica de predicados, es necesario añadir funciones, constantes y reglas que la involucren. Aunque la aritmética completa sea no decidible, hay "teorías" más pequeñas dentro de ella que sí lo son. Entre estas están la aritmética sin multiplicación y la teoría de orden lineal denso. Estas bastan para resolver cualquier modelo de optimización lineal.\\
 
