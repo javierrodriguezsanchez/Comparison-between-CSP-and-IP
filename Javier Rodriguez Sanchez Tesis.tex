@@ -304,7 +304,16 @@ Este procedimiento es conocido como método de eliminación de cuantificadores, 
 
 \subsection{Davis-Putnam}
 
-El algoritmo de Davis-Putnam(DP) es un precursor de los algoritmos modernos para resolver SAT, el cual utiliza el principio de resolución. Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2$ y $(p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Al aplicar iterativamente resolución, podemos deducir posibles valores de variables o una contradicción. En este último caso, se dice que el problema es insatisfacible.\\ 
+Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2$ y $(p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
+
+Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT. De forma general, este algoritmo realiza los siguientes pasos:
+\begin{enumerate}
+    \item Propagación unitaria: Por cada cláusula, si esta contiene con un único literal, se asigna valor 1 a dicho literal, eliminando todas las cláusulas que contengan dicho literal y eliminando su opuesto del resto de la fórmula.
+    \item Eliminar cláusulas redundantes: Si una cláusula tiene dos literales opuestos, se elimina dicha cláusula.
+    \item Eliminar literales puros: Si para un literal no existe su literal opuesto en la fórmula, se eliminan todas las cláusulas que contienen a dicho literal.
+    \item Condicion de parada: Si se obtiene la fórmula vacia, entonces se encontro una asignacion satisfacible. Si la fórmula resultante contiene la cláusula vacia, se encontro una contradiccion.
+    \item Resolución: Se selecciona un literal y se aplica principio de resolucion. Luego, se repite el algoritmo.
+\end{enumerate}
 
 Observe el siguiente ejemplo: La siguiente fórmula será satisfacible:
 $$(a\lor  b) \land(a\lor  \neg b) \land (\neg a\lor  c) \land(\neg a\lor  \neg c)$$
@@ -319,7 +328,7 @@ El algoritmo de Davis-Putnam sirve como base para el desarrollo de todos los alg
 Por otra parte, Davis-Logemann-Loveland(DLL/DPLL) se centra en asignar iterativamente valores a las variables y deshaciendo dichas asignaciones en caso de conflicto. Este algoritmo refina Davis-Putnam e introduce técnicas cruciales como el \textit{backjumping} y el aprendizaje de cláusulas. Se basa en tres hechos: 
 \begin{enumerate}
     \item Todo literal puro (se dice puro si el literal opuesto no esta presente) es asignado como cierto. Ejemplo: $(a\lor  b) \land (a\lor  \neg c) \land (d\lor  \neg c) \land (\neg d\lor  \neg b) \land (b\lor  c) $. Aquí al no estar $\neg a$ en ninguna cláusula, se puede asignar $a=1$ y reducir el problema a $(d\lor  \neg c) \land (\neg d\lor  \neg b) \land (b\lor  c) $.
-    \item si una cláusula tiene todos sus literales negados excepto uno este último debe ser cierto. Ejemplo $(a \lor  b \lor  c)\land(a\lor \neg b\lor \neg c)\land(\neg a\lor  b\lor \neg c) \land(\neg a\lor  \neg b\lor  c).$ Si se hace la asignación parcial $a=1, \neg c=1$, entonces la tercera clausula $(\neg a\lor  \neg b\lor  c)$ solo puede cumplirse si $\neg b=1$.
+    \item si una cláusula tiene todos sus literales negados excepto uno este último debe ser cierto. Ejemplo $(a \lor  b \lor  c)\land(a\lor \neg b\lor \neg c)\land(\neg a\lor  b\lor \neg c) \land(\neg a\lor  \neg b\lor  c).$ Si se hace la asignación parcial $a=1, \neg c=1$, entonces la tercera cláusula $(\neg a\lor  \neg b\lor  c)$ solo puede cumplirse si $\neg b=1$.
     \item Si todos los literales de una cláusula están negados, entonces la asignación hecha hasta dicho punto es falsa.\\
 \end{enumerate}
 
