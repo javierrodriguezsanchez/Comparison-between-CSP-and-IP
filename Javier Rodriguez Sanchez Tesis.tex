@@ -302,17 +302,18 @@ Concluyendo que $-2\leq  z \leq  8$. Y como el objetivo es maximizar. Se toma $z
 
 Este procedimiento es conocido como método de eliminación de cuantificadores, que si bien no es utilizado actualmente por existir soluciones mucho más eficientes dentro de la programación lineal como el método Simplex, teóricamente demuestra que la programación lineal es una teoría decidible.
 
-\subsection{Davis-Putnam}
+\subsection{Davis-Putnam y Davis-Logemann-Loveland}
 
 Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2$ y $(p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
 
-Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT. De forma general, este algoritmo realiza los siguientes pasos:
+Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. De forma general, este algoritmo realiza los siguientes pasos:
 \begin{enumerate}
-    \item Propagación unitaria: Por cada cláusula, si esta contiene con un único literal, se asigna valor 1 a dicho literal, eliminando todas las cláusulas que contengan dicho literal y eliminando su opuesto del resto de la fórmula.
-    \item Eliminar cláusulas redundantes: Si una cláusula tiene dos literales opuestos, se elimina dicha cláusula.
-    \item Eliminar literales puros: Si para un literal no existe su literal opuesto en la fórmula, se eliminan todas las cláusulas que contienen a dicho literal.
-    \item Condicion de parada: Si se obtiene la fórmula vacia, entonces se encontro una asignacion satisfacible. Si la fórmula resultante contiene la cláusula vacia, se encontro una contradiccion.
-    \item Resolución: Se selecciona un literal y se aplica principio de resolucion. Luego, se repite el algoritmo.
+    \item Por cada cláusula, si esta contiene con un único literal, se asigna valor 1 a dicho literal, eliminando todas las cláusulas que contengan dicho literal y eliminando su opuesto del resto de la fórmula.
+    \item Se eliminan todas las cláusulas tiene dos literales opuestos.
+    \item Si para un literal no existe su literal opuesto en la fórmula, se eliminan todas las cláusulas que contienen a dicho literal.
+    \item Si se obtiene la fórmula vacia, entonces se encontro una asignacion satisfacible. 
+    \item Si la fórmula resultante contiene la cláusula vacia, se encontro una contradiccion.
+    \item Se selecciona un literal y se aplica principio de resolución. Luego, se repiten los pasos anteriores.
 \end{enumerate}
 
 Observe el siguiente ejemplo: La siguiente fórmula será satisfacible:
@@ -320,54 +321,51 @@ $$(a\lor  b) \land(a\lor  \neg b) \land (\neg a\lor  c) \land(\neg a\lor  \neg c
 
 Al aplicar la regla de resolución entre las primeras dos cláusulas se obtiene la nueva restricción $(a \lor  a)$, la cual es lógicamente equivalente a $(a)$. Si se aplica nuevamente resolución entre esta cláusula y las dos últimas, se deduce $(c)$ y $(\neg c)$. Al aplicar resolución se observa que se llega a un absurdo, por lo que la fórmula nunca será satisfacible. \\
 
-El algoritmo de Davis-Putnam sirve como base para el desarrollo de todos los algoritmos utilizados para resolver el problema SAT, estableciendo un marco teórico importante para la lógica computacional.
+Otro enfoque para resolver problemas de clase SAT es mediante el uso de \textit{backtracking}, donde recursivamente se realizan asignaciones a literales para encontrar una interpretación válida de la fórmula, mientras se comprueba consistencia en cada asignación con el fin de deshacerlas en caso de conflicto. Este algoritmo es conocido como Davis-Logemann-Loveland(DLL/DPLL), considerado un refinamiento Davis-Putnam que permite introducir heurísticas como el \textit{backjumping} y el aprendizaje de cláusulas.
 
-
-\subsection{Davis-Logemann-Loveland}
-
-Por otra parte, Davis-Logemann-Loveland(DLL/DPLL) se centra en asignar iterativamente valores a las variables y deshaciendo dichas asignaciones en caso de conflicto. Este algoritmo refina Davis-Putnam e introduce técnicas cruciales como el \textit{backjumping} y el aprendizaje de cláusulas. Se basa en tres hechos: 
+El algoritmo tiene como base los siguientes pasos:
 \begin{enumerate}
-    \item Todo literal puro (se dice puro si el literal opuesto no esta presente) es asignado como cierto. Ejemplo: $(a\lor  b) \land (a\lor  \neg c) \land (d\lor  \neg c) \land (\neg d\lor  \neg b) \land (b\lor  c) $. Aquí al no estar $\neg a$ en ninguna cláusula, se puede asignar $a=1$ y reducir el problema a $(d\lor  \neg c) \land (\neg d\lor  \neg b) \land (b\lor  c) $.
-    \item si una cláusula tiene todos sus literales negados excepto uno este último debe ser cierto. Ejemplo $(a \lor  b \lor  c)\land(a\lor \neg b\lor \neg c)\land(\neg a\lor  b\lor \neg c) \land(\neg a\lor  \neg b\lor  c).$ Si se hace la asignación parcial $a=1, \neg c=1$, entonces la tercera cláusula $(\neg a\lor  \neg b\lor  c)$ solo puede cumplirse si $\neg b=1$.
-    \item Si todos los literales de una cláusula están negados, entonces la asignación hecha hasta dicho punto es falsa.\\
+    \item Se hace un preprocesamiento donde se buscan todos los literales puros y se les asigna valor 1.
+    \item si todos los literales han sido asignados y no hay contradicciones, entonces se encontró una interpretación satisfacible de la fórmula.
+    \item Se asigna valor a un literal y se ramifica, eliminando todas las cláusulas que contenían dicho literal y eliminando el literal opuesto del resto de cláusulas.
+    \item Luego, si ocurre una contradicción, se deshacen asignaciones hechas y se exploran nuevos casos.\\
 \end{enumerate}
-
-
-El algoritmo tiene 5 etapas:
-\begin{enumerate}
-    \item Preprocesamiento: Aquí se buscan todos los literales puros y se les asigna valor 1.
-    \item Ramificación: Aquí se asigna valor a un literal. Una buena heurística a la hora de decidir que literal escoger es \textit{Variable State Independent Decaying Sum} (VSIDS), que consiste en asignar un número a cada literal, el cual empieza siendo la cantidad de cláusulas en las que aparece, se divide entre una constante (usualmente 2) periódicamente y se le suma 1 cada vez que aparece en una cláusula conflicto.
-    \item Propagación unitaria (llamado en inglés \textit{Unit Propagation}), en esta etapa se asignan valores a aquellos literales cuyo valor se pueden deducir. Es una de las mejoras clave del DPLL sobre su predecesor
-    \item Análisis de conflicto: aquí se busca agregar restricciones adicionales basada en la asignación parcial en caso de hallar una contradicción
-    \item Retroceso (comúnmente llamado \textit{Backtracking}), deshace asignaciones hechas en caso de darse una contradicción, para así explorar nuevos casos.\\
-\end{enumerate}
-
+ 
 \textbf{Ejemplo de SAT utilizando DPLL}\\
 
 Considérese la siguiente fórmula en FNC:
 $F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)\land(D\lor \neg C)\land(\neg A\lor D)$\\
 
-Paso 1: Preprocesamiento
-Se buscan literales puros. En este caso, como $\neg D$ no está presente en ninguna cláusula, se asigna $D=true$, reduciendo $F$ a:
-$$F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)$$\\
+Se selecciona un literal y se le da valor $true$. Ejemplo:
+$$A=true$$
+Se eliminan las cláusulas que contienen a $A$ y al literal $\neg A$:
+$$F^I=(B\lor C)\land(\neg C)\land(\neg B)\land(D\lor \neg C)\land(D)$$
+Se repite el proceso:
+$$B=true$$
+$$F^{II}=(\neg C)\land()\land(D\lor \neg C)\land(D)$$
+Como se obtuvo una cláusula vacía, ocurrió una contradicción, por lo que se deben deshacer asignaciones:
+$$B=false$$
+$$F^{III}=(C)\land(\neg C)\land(D\lor \neg C)\land(D)$$
+Se continúa explorando:
+$$C=true$$
+$$F^{IV}=()\land(D)\land(D)$$
+Contradicción:
+$$C=false$$
+$$F^{V}=()\land(D)$$
+Contradicción:
+$$A=false$$
+$$F^{VI}=(\neg B)\land(B\lor C)\land(D\lor \neg C)$$
+Se asignan valores a B nuevamente:
+$$B=true$$
+$$F^{VII}=()\land(D\lor \neg C)$$
+Contradicción:
+$$B=false$$
+$$F^{VIII}=(C)\land(D\lor \neg C)$$
+Nuevamente se asigna un valor a C:
+$$C=true$$
+$$F^{IX}=(D)$$\\
 
-Paso 2: Ramificación
-El algoritmo DPLL selecciona un literal para asignar un valor. Supongamos que elegimos $A$ y lo asignamos a verdadero:
-$A=true$\\
-
-Paso 3: Propagación Unitaria
-Después de asignar $A=true$, se actualiza la fórmula. La cláusula $(A\lor \neg B)$ se satisface y se elimina, por lo que $F$ se reduce a $(B\lor C)\land(\neg C)\land(\neg B)$
-Ahora, se aprecian las cláusulas $(\neg C)$ y $(\neg B)$. Esto implica que $C=false$ y $B=false$. Sin embargo, esto hace falsa la segunda cláusula.\\
-
-Paso 4: Análisis del conflicto.
-Debido a que la asignación parcial conlleva a la cláusula vacía, se puede adicionar una nueva cláusula $(\neg A)$. Siendo ahora:
-$$F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)\land(\neg A)$$\\
-
-Paso 5: Retroceso
-Se deshace la asignación $A=true$. Luego, al volver al paso 1 y ejecutar luego ejecutar el paso 2, se llega a que la asignación:
-$A=false, B=false,C=true, D=true$\\
-
-Haciendo $F$ satisfacible.
+Finalmente, al hacer la asignación $D=true$ obtenemos que F es satisfacible para $A=B=false, C=D=true$.
 
 \subsection{Consistencia como forma de propagación de restricciones}
 
@@ -375,7 +373,7 @@ La mayoría de los algoritmos usados recaen en la propagación de restricciones 
 
 La forma más básica de consistencia es la consistencia de nodo, que se cumple si y solo si todos los valores del dominio de una variable cumplen con todas las restricciones unarias. Suponga que se tiene una variable $x \in \{1,2,...,50\}$. Si existe una restricción donde $x$ tiene que ser par, entonces al restringir el dominio de $x$ a $\{2,4,...,50\}$, se cumple la consistencia de nodo.\\
 
-También se habla de la consistencia de arco, alcanzada al eliminar aquellos valores $a$ de una variable $x$ si no existen valores $b$ de una variable $y$ tales que $(a,b)$ satisfagan a todas las restricciones entre $x$ y $y$. Uno de los algoritmos más utilizados para alcanzar dicho estado es el algoritmo AC-3, el cual guarda todos los pares ordenados de variables en una cola. Luego saca iterativamente cada uno de estos pares $<x,y>$ hasta que la cola se quede vacía, y comprueba la consistencia de arco para cada posible valor de $x$. Si un valor no cumple la consistencia de arcos, este valor es eliminado del dominio de $x$, y todos los pares de variables de la forma $<z,x>$ son reinsertados en la cola. El algoritmo tiene una complejidad de tiempo en el peor de los casos de $O(ed^3 )$, donde $e$ es la cantidad de pares y $d$ es el tamaño de dominio más grande. Tras aplicar la consistencia de arco, pueden surgir tres posibles escenarios: si todos los dominios de las variables quedan con exactamente 1 valor (en cuyo caso la asignación es satisfacible), si un dominio queda vacío (en cuyo caso ocurriría una contradicción y se debe retroceder en una asignación) o si al menos un dominio queda con más de un posible valor, en cuyo caso se le debe asignar un valor y volver a realizar consistencia de arco.\\
+También se usa la consistencia de arco, alcanzada al eliminar aquellos valores $a$ de una variable $x$ si no existen valores $b$ de una variable $y$ tales que $(a,b)$ satisfagan a todas las restricciones entre $x$ y $y$. Uno de los algoritmos más utilizados para alcanzar dicho estado es el algoritmo AC-3, el cual guarda todos los pares ordenados de variables en una cola. Luego saca iterativamente cada uno de estos pares $<x,y>$ hasta que la cola se quede vacía, y comprueba la consistencia de arco para cada posible valor de $x$. Si un valor no cumple la consistencia de arcos, este valor es eliminado del dominio de $x$, y todos los pares de variables de la forma $<z,x>$ son reinsertados en la cola. El algoritmo tiene una complejidad de tiempo en el peor de los casos de $O(ed^3 )$, donde $e$ es la cantidad de pares y $d$ es el tamaño de dominio más grande. Tras aplicar la consistencia de arco, pueden surgir tres posibles escenarios: si todos los dominios de las variables quedan con exactamente 1 valor (en cuyo caso la asignación es satisfacible), si un dominio queda vacío (en cuyo caso ocurriría una contradicción y se debe retroceder en una asignación) o si al menos un dominio queda con más de un posible valor, en cuyo caso se le debe asignar un valor y volver a realizar consistencia de arco.\\
 
 Otras formas de consistencia existentes son la consistencia de camino y la $k$-consistencia. La consistencia de camino considera no solo las restricciones binarias entre pares de variables, sino también las relaciones a través de secuencias más largas de variables. Aquí, $u$ es un valor consistente de $x$ si para todo $y$ existe un $w$ tal que dado cualquier secuencia de variables $a_1, a_2, ... a_n$, con $a_1=x$ y $a_n=y$ tenga la secuencia de valores $v_1, v_2, ... v_n$ con $v_1=u$ y $v_n=w$ de forma que el par $<v_i,v_{i+1}>$ cumpla con todas las restricciones binarias entre $a_i$ y $a_{i+1}$, con $1\leq  i \leq  n$. Si bien la aplicación de la consistencia de camino garantiza un mayor nivel de consistencia que la consistencia del arco, todavía no es suficiente para resolver CSP en general. Esto significa que garantizando dicha consistencia, no todas las asignaciones garantizadas por esta son necesariamente soluciones satisfacibles. Por otra parte, la k-consistencia se logra al garantizar que cualquier asignación válida de valores a $k-1$ variables garantiza la posibilidad de asignación de un valor a cualquier otra variable. Se dice que se es fuertemente $k$-consistente si para todo $j<k$ se es $j$-consistente. Ambos tipos de consistencias son bastante costosos computacionalmente, por lo que no son muy utilizados en la práctica en comparación con la consistencia de arco.\\
 
