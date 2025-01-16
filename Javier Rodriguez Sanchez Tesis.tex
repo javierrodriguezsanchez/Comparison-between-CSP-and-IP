@@ -385,8 +385,34 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
 \textbf{Restricciones globales fundamentales:}\\
 
 \begin{itemize}
-    \item \textbf{All Different}: Esta restricción fuerza a que todos los valores de las variables sean diferentes entre sí.
+    \item \textbf{All Different}: Esta restricción fuerza a que todos los valores de las variables sean diferentes entre sí. Esto resuelve muchos modelos de optimizacion que no son capaces de resolver este tipo de restricciones mediante la programación entera.
+    
+    Ejemplo de uso:
+    $$All\_Different(x,y,z)$$
+    Equivalente en programación entera:
+    $$x\leq y-1+a_{xy}*(M_x-y+1)$$
+    $$x\geq m_x+a_{xy}*(y+1-m_x)$$
+    $$y\leq z-1+a_{yz}*(M_y-z+1)$$
+    $$y\geq m_y+a_{yz}*(z+1-m_y)$$
+    $$z\leq z-1+a_{zx}*(M_z-x+1)$$
+    $$z\geq m_z+a_{zx}*(x+1-m_z)$$
+    Donde $a_{xy},a{yz},a_{zx}$ son variables binarias, y $M_x,m_x,M_y,m_y,M_z,m_z$ son los respectivas cotas superiores e inferiores de $x,y,z$. Estas restricciones no se pueden hacer en variables con dominios no acotados. El número de restricciones y variables binarias crece exponencialmente con el número de variables.
+    
     \item \textbf{Global Cardinality}: Estas restricciones controlan la cantidad de veces que ciertos valores pueden aparecer en un conjunto de variables. Por ejemplo, global\_cardinality permite especificar cuántas veces debe aparecer cada valor en un \textit{array} de variables.
+    Ejemplo de uso:
+    $$Global_Cardinality(V,c,x_1,x_2...,x_n)$$
+    Equivalente en programación entera:
+    $$\sum^n_{i=0} a_i \leq c$$
+    $$x_1\leq M_1 - a_1(M_1-V)$$
+    $$x_1\geq m_1 - a_1(m_1-V)$$
+    $$x_2\leq M_2 - a_1(M_2-V)$$
+    $$x_2\geq m_2 - a_1(m_2-V)$$
+    $$...$$    
+    $$x_n\leq M_n - a_1(M_n-V)$$
+    $$x_n\geq m_n - a_1(m_n-V)$$
+
+    Con $a_1,a_2,..a_n$ variables binarias y $M_1,M_2,...,M_n,m_1,m_2,...m_n$ cotas superiores e inferiores de $x_1,x_2,..,x_n$. Estas restricciones no se pueden hacer en variables con dominios no acotados.
+    
     \item \textbf{Inverse}: Esta restricción asegura que si un valor se asigna a una variable, entonces otro conjunto de variables debe reflejar esa asignación en un orden inverso. Es útil para problemas donde la relación entre las variables es crucial.
     \item \textbf{Table}: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar relaciones complejas entre variables.
     \item \textbf{Circuit}: Asegura que un conjunto de variables forma un circuito, lo cual es esencial en problemas como el Traveling Salesman Problem. Esta restricción garantiza que no haya subcircuitos y que todos los nodos sean visitados.
