@@ -413,13 +413,48 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
 
     Con $a_1,a_2,..a_n$ variables binarias y $M_1,M_2,...,M_n,m_1,m_2,...m_n$ cotas superiores e inferiores de $x_1,x_2,..,x_n$. Estas restricciones no se pueden hacer en variables con dominios no acotados.
     
-    \item \textbf{Inverse}: Esta restricción asegura que si un valor se asigna a una variable, entonces otro conjunto de variables debe reflejar esa asignación en un orden inverso. Es útil para problemas donde la relación entre las variables es crucial.
-    \item \textbf{Table}: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar relaciones complejas entre variables.
     \item \textbf{Circuit}: Asegura que un conjunto de variables forma un circuito, lo cual es esencial en problemas como el Traveling Salesman Problem. Esta restricción garantiza que no haya subcircuitos y que todos los nodos sean visitados.
-    \item \textbf{Lexicographic Order (Lex)}: Se utiliza para imponer un orden lexicográfico entre dos o más secuencias de variables, lo que puede ser útil en problemas donde el orden relativo es importante.
+    
+    Ejemplo de uso:
+    $$Circuit(x_1,x_2...,x_n)$$
+    Equivalente en programación entera:
+    $$\forall i,j\in\{2,3,...,n\}i\neq j:x_i-x_j+(n-1)a_{ij}\leq n-2$$
+    $$\forall i\in\{2,3,...,n\}: 1\leq x_i\leq n-1$$
+
+    Con $a_{i,j}$ variables binarias. Esto equivale a $n^2$ variables binarias y $n+1$ restricciones.
+    
     \item \textbf{Element}: Esta restricción permite acceder a los elementos de un \textit{array} mediante índices definidos por otras variables, facilitando la modelización de problemas donde se necesita seleccionar entre múltiples opciones.
+
+    
+    Ejemplo de uso:
+    $$y=Element(array,x)$$
+    Equivalente en programación entera:
+        $$\forall i(i\in\{0,..n-1\}:i*a_i\leq x\leq n - a_i*(n-i)$$
+        $$y=\sum_{i=0}^{n-1}a_i*array[i]$$
+
+    Donde $n$ es la cantidad de elementos que tiene el array y $a_0,a_1,...a_{n-1}$ son variables binarias. Esto equivale a $2n+1$ restricciones.
+
+    
     \item \textbf{Cumulative}: Se utiliza para gestionar recursos limitados en el tiempo, asegurando que las demandas no excedan la capacidad disponible en cada momento.
-    \item \textbf{Regular}: Permite definir restricciones sobre cadenas de longitud variable y es útil en problemas relacionados con autómatas y gramáticas formales.
+    
+    Ejemplo de uso:
+    $$Cumulative(x,d,r, c)$$
+    Donde $x$ es el conjunto de variables, $d$ las duraciones de las tareas, $r$ los recursos que requiere una tarea y $c$ la capacidad máxima de tareas que se pueden hacer simbultáneamente.
+    Equivalente en programación entera:
+    $$\forall t \in \{1,2,..h\}:\sum_{i=1}^nx_{it}*r_i\leq c$$
+    $$\forall i \in \{1,2,..n\}:\sum_{t=1}^hx_{it}\leq d_i$$
+    Donde $h$ es la máxima duración en la que puede hacerse todas las tareas, $n$ es la cantidad de tareas, $c$ es la capacidad, $d_1,d_2,...,d_n$ son las duraciones de cada tarea, $r_1,r_2,..,r_n$ son los recursos que requiere consumir la tarea $i$ y $x_{it}:i\in\{1,2,...,n\},t\in\{1,2,...,h\}$ son variables binarias que representan realizar la tarea i en el momento j.
+
+    
+    \item \textbf{Table}: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar tuplas y relaciones complejas entre variables.
+    Ejemplo de uso:
+    $$Table(x,D)$$
+    Donde $x$ es un conjunto ordenado de variables y $D$ son los posibles pares enlazados que pueden tener los elementos de x. 
+    Equivalente en programación entera:
+    $$\sum_{i=1}^{|D|}a_{i}=1$$
+    $$\forall j(1\leq j\leq n):x_j=\sum_{i=1}^{|D|}a_i*d_{ij}$$
+    Donde $d_ij$ es el valor del $j-$ésimo componente del $i-$ésimo elemento de $D$ y $a_1,a_2,...,a_n$ son variables binarias.
+
     
 \end{itemize}
 
