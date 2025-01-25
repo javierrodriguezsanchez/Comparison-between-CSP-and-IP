@@ -100,7 +100,7 @@ La programación en enteros es un conjunto de herramientas ampliamente utilizada
 
 El paradigma antes mencionado es una extensión de la programación lineal, ya que, de forma general, resolver un problema de programación en enteros requiere resolver uno o varios problemas lineales.\\
 
-El principal algoritmo utilizado para resolver un problema de optimización lineal es el método Simplex. Se centra en la resolución de los modelos en su llamada forma estándar: $min$ $c^Tx$ $s.a.$ $Ax=b$, $x\geq 0$.  Se dice que $x$ es solución factible de un problema lineal en su forma estándar si $Ax=b$. Si $x$ tiene un número de componentes nulas menor o igual al número de restricciones, se dice que $x$ es solución factible básica. De estas definiciones se deriva el Teorema Fundamental de la Programación Lineal, el cual garantiza que si existe una solución factible óptima, entonces también existe una solución factible básica óptima. Este teorema es la base del método Simplex, que consiste en explorar únicamente las soluciones factibles básicas del problema en búsqueda del óptimo.\\
+El principal algoritmo utilizado para resolver un problema de optimización lineal es el método Simplex. Se centra en la resolución de los modelos en su llamada forma estándar: $min$ $c^Tx$ sujeto a $Ax=b$, $x\geq 0$.  Se dice que $x$ es solución factible de un problema lineal en su forma estándar si $Ax=b$. Si $x$ tiene un número de componentes nulas menor o igual al número de restricciones, se dice que $x$ es solución factible básica. De estas definiciones se deriva el Teorema Fundamental de la Programación Lineal, el cual garantiza que si existe una solución factible óptima, entonces también existe una solución factible básica óptima. Este teorema es la base del método Simplex, que consiste en explorar únicamente las soluciones factibles básicas del problema en búsqueda del óptimo.\\
 
 El primer paso del algoritmo es encontrar una solución factible básica. Una vez con esta, el algoritmo compara las evaluaciones entre la solución actual y las adyacentes (aquellas que se obtienen al cambiar un componente básico por uno no básico). Si ninguna solución adyacente tiene una evaluación menor que la actual, entonces se ha encontrado una solución óptima, lo cual se asegura debido a la convexidad del conjunto de soluciones factibles. De lo contrario, se cambia de solución factible básica y se repite el proceso.\\
 
@@ -126,9 +126,16 @@ $$10x_1+14x_2 \leq  35$$
 $$x_1,x_2\geq 0$$
 $$x_1,x_2\in\mathbb{Z}$$\\
 
-La menor cobertura convexa es:
+Como se muestra en la figura \ref{fig:cobertura convexa}, la menor cobertura convexa es:
 
 $$conv(S)=\{(x_1,x_2)|x_1+x_2\leq 3 \land x_1+2x_2\leq 4 \land x_1,x_2\geq 0\}$$
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{cobertura convexa.png}
+    \caption{En rojo las restricciones originales, en verde la menor cobertura convexa que contiene a las soluciones enteras.}
+    \label{fig:cobertura convexa}
+\end{figure}
 
 Si se utiliza Simplex para resolver este nuevo problema:
 
@@ -182,7 +189,7 @@ Suponga que se desea introducir las siguientes restricciones:
 $$ \sum_j a_{ij}x_j \leq  b_i \implies  \delta_i = 1$$
 $$  \delta_i = 1 \implies  \sum_j a_{ij}x_j \leq  b_i$$
 
-Si estas restricciones se logran, se podría saber cuántas restricciones se cumplen en un modelo, haciendo bisección entre una restricción y una variable binaria.\\
+Si estas restricciones se logran, se podría saber cuántas restricciones se cumplen en un modelo, haciendo biyección entre una restricción y una variable binaria.\\
 
 Para la primera fórmula, al aplicar contrarrecíproco, se quiere que $\sum_j a_{ij}x_j > b_i$, pero si $\exists m:\sum_j a_{ij}x_j\geq  m$ , entonces se puede crear la restricción $\sum_j a_{ij}x_j \geq  b_i+\epsilon+(m-b-\epsilon)\delta_i$. De esa forma, si $\delta_i=1$ es una restricción redundante, si $\delta_i=0$ entonces fuerza a incumplir la restricción objetivo.\\
 
@@ -208,13 +215,16 @@ La programación de satisfacción de restricciones (CSP) es aquella especializad
 
 \subsection{SAT como base de la satisfacción de restricciones}
 
-No siempre es obvio, con un solo problema, hasta qué punto se utiliza la lógica o se utilizan métodos matemáticos más analíticos propios de la programación entera. Sin embargo, hay una gran ventaja en poder moverse entre los dos y reconocer las relaciones entre ellos. En este sentido, la programación entera y la lógica son simbióticas.\\
+No siempre es obvio, con un solo problema, hasta qué punto se utiliza la lógica o se utilizan los métodos matemáticos propios de la programación entera. Sin embargo, hay una gran ventaja en poder moverse entre los dos y reconocer las relaciones entre ellos. En este sentido, la programación entera y la lógica son simbióticas.\\
 
-En este contexto, el problema de satisfacibilidad booleana (SAT) emerge como un caso paradigmático donde la lógica y la optimización discreta se cruzan. El Teorema de Cook, propuesto por Stephen Cook en 1971, es un hito fundamental en la teoría de la complejidad computacional, pues plantea que todo problema de la categoría NP es reducible a SAT, demostrando también la pertenencia de esta clase de problemas a la clase NP-Completo. Este consiste en determinar, dada una fórmula lógica, si existe una interpretación de la misma tal que sea verdadera.\\ 
+En este contexto, el problema de satisfacibilidad booleana (SAT) emerge como un caso paradigmático donde la lógica y la optimización discreta se cruzan. El Teorema de Cook, propuesto por Stephen Cook en 1971, es un hito fundamental en la teoría de la complejidad computacional, pues plantea que todo problema de la categoría NP es reducible a SAT, demostrando también la pertenencia de SAT a la clase NP-Completo. Este problema consiste en determinar, dada una fórmula lógica, si existe una interpretación de la misma tal que sea verdadera.\\ 
 
-Todo lo anteriormente planteado permite resaltar la gran importancia que cobra la lógica en este tipo de problemas, pues es la que permite deducir enunciados a partir de otros en función de las reglas de deducción que lo conforman. Más específicamente, la lógica proposicional y la lógica de predicados proporcionan un marco teórico robusto para abordar los problemas SAT.\\
+Cuando los dominios de las variables son finitos, entonces cualquier fórmula de la lógica de predicados puede expresarse como una fórmula de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. Mientras que un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. \\
 
-Como forma general, todo problema SAT se representa como una conjunción de disyunciones de variables proposicionales o sus negaciones, y todos los cuantificadores se sitúan al principio de la expresión (\textit{Prenex Normal Form}). Se habla de un literal a variable proposicional o su negación, las disyunciones de literales se llaman cláusulas y una conjunción de cláusulas es conocida como Forma Normal Conjuntiva(CNF). Es necesario señalar que toda expresión válida de la lógica de predicados puede llevarse a dicha forma.
+Todo lo anteriormente planteado permite resaltar la gran importancia que cobra la lógica en este tipo de problemas, pues es la que permite deducir enunciados a partir de otros en función de las reglas de deducción que lo conforman. Más específicamente, la lógica proposicional y la lógica de predicados proporcionan un marco teórico robusto para abordar los problemas NP.\\
+
+
+Como forma general, todo problema SAT se representa en su Forma Normal Conjuntiva(CNF), y todos los cuantificadores se sitúan al principio de la expresión (\textit{Prenex Normal Form}).
 
 Ejemplo:
 
@@ -230,11 +240,9 @@ $$\forall x\forall y((\neg Q(y)\land\neg R(x))\lor  P(x))$$
 Finalmente, utilizando la equivalencia $(A\land B)\lor C\equiv (A\lor C)\land(B\lor C)$
 $$\forall x\forall y((\neg Q(y)\lor  P(x))\land(\neg R(x)\lor  P(x)))$$\\
 
-Cuando los dominios de las variables son finitos, entonces cualquier fórmula de la lógica de predicados puede expresarse como una conjunción de cláusulas de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. \\
+En una forma normal conjuntiva, a una variable proposicional o su negación se le denomina literal, los cuales se pueden clasificar respectivamente en literales positivos o negativos. A las disyunciones de literales se les llama cláusulas. Una cláusula con un único literal se le conoce como cláusula unitaria. Dos literales son complementarios u opuestos si uno es la negación del otro. Un literal se denomina puro en una FNC si no está su literal complementario.
 
-Un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. Sin embargo, estas dos propiedades no siempre pueden coexistir en todos los sistemas. Este dilema es especialmente relevante en el contexto de la teoría de Gödel, que establece que en cualquier sistema formal consistente que sea capaz de expresar la aritmética básica, que contenga dominio infinito, principio de inducción y todas las operaciones elementales; incluye proposiciones que no pueden ser ni demostradas ni refutadas dentro del propio sistema. Lo cual significa que no puede ser completo.\\
-
-A la hora de encarar un problema de optimización usando lógica de predicados, es necesario añadir funciones, constantes y reglas que la involucren. Aunque la aritmética completa sea no decidible, hay "teorías" más pequeñas dentro de ella que sí lo son. Entre estas están la aritmética sin multiplicación y la teoría de orden lineal denso. Estas bastan para resolver cualquier modelo de optimización lineal.\\
+A la hora de encarar un problema de optimización usando lógica de predicados, es necesario añadir funciones, constantes y reglas propias de la aritmética. Aunque la aritmética completa sea no decidible, hay "teorías" más pequeñas dentro de ella que sí lo son. Entre estas están la aritmética sin multiplicación y la teoría de orden lineal denso. Estas bastan para resolver cualquier modelo de optimización lineal.\\
 
 Observe lo anteriormente planteado en el siguiente ejemplo:
 
@@ -304,24 +312,24 @@ Este procedimiento es conocido como método de eliminación de cuantificadores, 
 
 \subsection{Davis-Putnam y Davis-Logemann-Loveland}
 
-Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2$ y $(p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
+Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2 \land (p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
 
 Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. De forma general, este algoritmo realiza los siguientes pasos:
 \begin{enumerate}
-    \item Por cada cláusula, si esta contiene con un único literal, se asigna valor 1 a dicho literal, eliminando todas las cláusulas que contengan dicho literal y eliminando su opuesto del resto de la fórmula.
-    \item Se eliminan todas las cláusulas tiene dos literales opuestos.
-    \item Si para un literal no existe su literal opuesto en la fórmula, se eliminan todas las cláusulas que contienen a dicho literal.
-    \item Si se obtiene la fórmula vacia, entonces se encontro una asignacion satisfacible. 
-    \item Si la fórmula resultante contiene la cláusula vacia, se encontro una contradiccion.
+    \item Por cada cláusula  unitaria, se elimninan todas las cláusulas que compartan dicho literal. Luego, se elimina el literal complementario del resto de cláusulas.
+    \item Se eliminan todas las cláusulas que contengan literales complementarios.
+    \item Se eliminan todas las cláusulas con literales puros.
+    \item Si se obtiene la fórmula vacía, entonces se encontró una asignación satisfacible. 
+    \item Si la fórmula resultante contiene la cláusula vacía, se encontró una contradicción.
     \item Se selecciona un literal y se aplica principio de resolución. Luego, se repiten los pasos anteriores.
 \end{enumerate}
 
-Observe el siguiente ejemplo: La siguiente fórmula será satisfacible:
+Obsérvese el siguiente ejemplo. ¿La siguiente fórmula será satisfacible?:
 $$(a\lor  b) \land(a\lor  \neg b) \land (\neg a\lor  c) \land(\neg a\lor  \neg c)$$
 
 Al aplicar la regla de resolución entre las primeras dos cláusulas se obtiene la nueva restricción $(a \lor  a)$, la cual es lógicamente equivalente a $(a)$. Si se aplica nuevamente resolución entre esta cláusula y las dos últimas, se deduce $(c)$ y $(\neg c)$. Al aplicar resolución se observa que se llega a un absurdo, por lo que la fórmula nunca será satisfacible. \\
 
-Otro enfoque para resolver problemas de clase SAT es mediante el uso de \textit{backtracking}, donde recursivamente se realizan asignaciones a literales para encontrar una interpretación válida de la fórmula, mientras se comprueba consistencia en cada asignación con el fin de deshacerlas en caso de conflicto. Este algoritmo es conocido como Davis-Logemann-Loveland(DLL/DPLL), considerado un refinamiento Davis-Putnam que permite introducir heurísticas como el \textit{backjumping} y el aprendizaje de cláusulas.
+Otro enfoque para resolver problemas de clase SAT es mediante el uso de \textit{backtracking}, donde recursivamente se realizan asignaciones a literales para encontrar una interpretación válida de la fórmula, mientras se comprueba consistencia en cada asignación con el fin de deshacerlas en caso de conflicto. Este algoritmo es conocido como Davis-Logemann-Loveland(DLL/DPLL).
 
 El algoritmo tiene como base los siguientes pasos:
 \begin{enumerate}
