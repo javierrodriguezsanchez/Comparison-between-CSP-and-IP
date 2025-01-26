@@ -169,7 +169,21 @@ $$x_1, x_2 \in \mathbb{Z}$$
 
 Solución óptima: $x_1=2.67, x_2=4.16, Objective=6.83$.\\
 
-Entonces, el problema se divide en dos subproblemas distintos: uno con la restricción extra $x_1\leq 2$ (Caso 1) y otro con la restricción extra $x_1\geq 3$ (Caso 2).\\
+Entonces, como se observa en las figuras \ref{fig:b&b} y \ref{fig:branch and bound}, el problema se divide en dos subproblemas distintos: uno con la restricción extra $x_1\leq 2$ (Caso 1) y otro con la restricción extra $x_1\geq 3$ (Caso 2).\\
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{b&b.png}
+    \caption{En azul las restricciones originales, las líneas discontinuas representan las restricciones introducidas. Los puntos rojos son las soluciones incorrectas, el resto son soluciones enteras factibles. En morado la dirección del gradiente. En verde la solución entera óptima. En amarillo la solución entera que es óptima en una de las ramas.}
+    \label{fig:b&b}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{branch and bound.png}
+    \caption{Cada flecha añade una restricción. Los casos en azul no tienen todas sus variables en enteros, las casos en rojo no tienen soluciones, el caso en verde ofrece el óptimo.}
+    \label{fig:branch and bound}
+\end{figure}
 
 Para el caso 1, la solución óptima es: $x_1=2, x_2=3.5, Objective=5.5$
 
@@ -314,7 +328,7 @@ Este procedimiento es conocido como método de eliminación de cuantificadores, 
 
 Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2 \land (p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
 
-Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. De forma general, este algoritmo realiza los siguientes pasos:
+Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. Como se indica en el psudocódigo de la figura \ref{fig:dp}, este algoritmo realiza los siguientes pasos:
 \begin{enumerate}
     \item Por cada cláusula  unitaria, se elimninan todas las cláusulas que compartan dicho literal. Luego, se elimina el literal complementario del resto de cláusulas.
     \item Se eliminan todas las cláusulas que contengan literales complementarios.
@@ -324,6 +338,14 @@ Usando como base el principio de resolución, emerge el algoritmo de Davis-Putna
     \item Se selecciona un literal y se aplica principio de resolución. Luego, se repiten los pasos anteriores.
 \end{enumerate}
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dp speudocode.png}
+    \caption{Pseudocódigo de Davis-Putman}
+    \label{fig:dp}
+\end{figure}
+
+
 Obsérvese el siguiente ejemplo. ¿La siguiente fórmula será satisfacible?:
 $$(a\lor  b) \land(a\lor  \neg b) \land (\neg a\lor  c) \land(\neg a\lor  \neg c)$$
 
@@ -331,18 +353,35 @@ Al aplicar la regla de resolución entre las primeras dos cláusulas se obtiene 
 
 Otro enfoque para resolver problemas de clase SAT es mediante el uso de \textit{backtracking}, donde recursivamente se realizan asignaciones a literales para encontrar una interpretación válida de la fórmula, mientras se comprueba consistencia en cada asignación con el fin de deshacerlas en caso de conflicto. Este algoritmo es conocido como Davis-Logemann-Loveland(DLL/DPLL).
 
-El algoritmo tiene como base los siguientes pasos:
+El algoritmo, como se muestra en el pseudocódigo de la figura \ref{fig:dpll pc}, tiene como base los siguientes pasos:
 \begin{enumerate}
     \item Se hace un preprocesamiento donde se buscan todos los literales puros y se les asigna valor 1.
     \item si todos los literales han sido asignados y no hay contradicciones, entonces se encontró una interpretación satisfacible de la fórmula.
     \item Se asigna valor a un literal y se ramifica, eliminando todas las cláusulas que contenían dicho literal y eliminando el literal opuesto del resto de cláusulas.
     \item Luego, si ocurre una contradicción, se deshacen asignaciones hechas y se exploran nuevos casos.\\
 \end{enumerate}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dpll speudocode.png}
+    \caption{Pseudocódigo de Davis-Logemann-Loveland}
+    \label{fig:dpll pc}
+\end{figure}
+
  
 \textbf{Ejemplo de SAT utilizando DPLL}\\
 
 Considérese la siguiente fórmula en FNC:
 $F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)\land(D\lor \neg C)\land(\neg A\lor D)$\\
+
+Como se ve en la figura \ref{fig:DPLL}, DPLL procede de la siguiente forma:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{DPLL.png}
+    \caption{Funcionamiento del algoritmo DPLL}
+    \label{fig:DPLL}
+\end{figure}
 
 Se selecciona un literal y se le da valor $true$. Ejemplo:
 $$A=true$$
@@ -387,7 +426,13 @@ Otras formas de consistencia existentes son la consistencia de camino y la $k$-c
 
 \subsection{Restricciones globales de la programación de satisfacción de restricciones}
 
-A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, en la programación por restricciones, los modelos suelen expresarse en forma de predicados, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. Dichos predicados suelen depender del software utilizado, y en muchos casos se da la oportunidad al usuario de definir predicados locales. Pero de forma general existen restricciones globales que suelen ser semánticamente redundantes y permiten filtrar el dominio de las variables.
+A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, en la programación por restricciones, los modelos suelen expresarse en forma de predicados, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. \\
+
+El lenguaje de la lógica de predicados está conformado por constantes, variables, funciones n-arias, relaciones n-arias y operadores proposicionales y existenciales. Se denomina término a una constante individual, a una variable o $f(t_1,t_2,...,t_n)$ donde $f$ es una función n-aria y $t_1,t_2,...,t_n$ son términos. En este contexto, una restricción es una fórmula lógica de la forma $p(t_1,t_2,...,t_n)$, donde $p$ es una relación n-aria y $t_1,t_2,...,t_n$ son términos. Finalmente, un lenguaje de restricciones es un conjunto de funciones y relaciones que se aplican sobre un dominio dado. \\
+
+Se puede destacar que la programación entera mixta es un lenguaje de restricciones con las funciones $+, -, *$; y las relaciones $=,\leq,\geq$ y la restricción de integralidad. Sin embargo, en muchas situaciones, es conveniente modelar muchos más tipos de condiciones, o al menos hacerlo de forma más natural, intuitiva, declarativa y simple. El ejemplo perfecto es expresar la desigualdad entre dos variables $x$ y $y$. Mientras la programación entera mixta necesita expresarlo con dos restricciones y una variable binaria solo cuando las variables son acotadas, en la programación con restricciones se expresa de la forma $x\neq y$.\\
+
+La programación de restricciones no sólo incluye la restricción de desigualdad. La riqueza y versatilidad de la lógica de predicados de primer orden cuenta con un amplio repertorio de condiciones modeladas que se han reiterado numerosas veces en problemáticas reales, tales como evitar solapamientos en un conjunto de intervalos de diferentes longitudes, la búsqueda de ciclos halmintoneanos en grafos dirigidos, el uso de indexadores o la representación de complejas correlaciones entre valores de variables. Estos predicados suelen ser mucho más compactos que los modelos IP y suelen depender del software utilizado. Pero, de forma general, son restricciones globales que suelen ser semánticamente redundantes y permiten filtrar el dominio de las variables. \\
 
 
 \textbf{Restricciones globales fundamentales:}\\
@@ -405,10 +450,11 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
     $$z\leq z-1+a_{zx}*(M_z-x+1)$$
     $$z\geq m_z+a_{zx}*(x+1-m_z)$$
     Donde $a_{xy},a{yz},a_{zx}$ son variables binarias, y $M_x,m_x,M_y,m_y,M_z,m_z$ son los respectivas cotas superiores e inferiores de $x,y,z$. Estas restricciones no se pueden hacer en variables con dominios no acotados. El número de restricciones y variables binarias crece exponencialmente con el número de variables.
+    Algunos problemas en los que se aplica esta restricción son en problemas de asignación de recursos, donde se necesite repartir $n$ tareas entre $n$ trabajadores diferentes; problemas de horarios, donde cada materia deba ser impartida en horarios diferentes; o problemas combinatorios, donde haga falta analizar permutaciones.\\
     
     \item \textbf{Global Cardinality}: Estas restricciones controlan la cantidad de veces que ciertos valores pueden aparecer en un conjunto de variables. Por ejemplo, global\_cardinality permite especificar cuántas veces debe aparecer cada valor en un \textit{array} de variables.
     Ejemplo de uso:
-    $$Global_Cardinality(V,c,x_1,x_2...,x_n)$$
+    $$Global\_Cardinality(V,c,x_1,x_2...,x_n)$$
     Equivalente en programación entera:
     $$\sum^n_{i=0} a_i \leq c$$
     $$x_1\leq M_1 - a_1(M_1-V)$$
@@ -420,6 +466,8 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
     $$x_n\geq m_n - a_1(m_n-V)$$
 
     Con $a_1,a_2,..a_n$ variables binarias y $M_1,M_2,...,M_n,m_1,m_2,...m_n$ cotas superiores e inferiores de $x_1,x_2,..,x_n$. Estas restricciones no se pueden hacer en variables con dominios no acotados.
+
+    Algunos problemas en los que se aplica esta restricción son en problema de balanceo de líneas de producción, donde se quiera evitar la sobrecarga de una máquina, problemas logísticos, como evitar que cierta cantidad de productos exceda la capacidad del transporte; o problemas de planificación de horarios, donde un determinado suceso debe tener un numero específico de frecuencias.\\
     
     \item \textbf{Circuit}: Asegura que un conjunto de variables forma un circuito, lo cual es esencial en problemas como el Traveling Salesman Problem. Esta restricción garantiza que no haya subcircuitos y que todos los nodos sean visitados.
     
@@ -430,6 +478,8 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
     $$\forall i\in\{2,3,...,n\}: 1\leq x_i\leq n-1$$
 
     Con $a_{i,j}$ variables binarias. Esto equivale a $n^2$ variables binarias y $n+1$ restricciones.
+
+    Algunos problemas en los que se aplica esta restricción son en la planificación de rutas de vehículos, entre estos el problema del viajante; en diseño de circuitos electrónicos, cuando se está diseñando sistemas donde los componentes deben estar conectados en un ciclo (como en ciertos tipos de osciladores o buses de comunicación); o en la biología computacional para la reconstrucción de ciclos genómicos.\\
     
     \item \textbf{Element}: Esta restricción permite acceder a los elementos de un \textit{array} mediante índices definidos por otras variables, facilitando la modelización de problemas donde se necesita seleccionar entre múltiples opciones.
 
@@ -442,6 +492,7 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
 
     Donde $n$ es la cantidad de elementos que tiene el array y $a_0,a_1,...a_{n-1}$ son variables binarias. Esto equivale a $2n+1$ restricciones.
 
+    Algunos problemas en los que se aplica esta restricción son la asignación condicional de costos, donde el costo de una operación depende del índice de un recurso seleccionado; o problemas de almacenamientos donde haga falta determinar el lugar o contenedor donde almacenar un objeto basándose en índices de inventario.\\
     
     \item \textbf{Cumulative}: Se utiliza para gestionar recursos limitados en el tiempo, asegurando que las demandas no excedan la capacidad disponible en cada momento.
     
@@ -453,6 +504,7 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
     $$\forall i \in \{1,2,..n\}:\sum_{t=1}^hx_{it}\leq d_i$$
     Donde $h$ es la máxima duración en la que puede hacerse todas las tareas, $n$ es la cantidad de tareas, $c$ es la capacidad, $d_1,d_2,...,d_n$ son las duraciones de cada tarea, $r_1,r_2,..,r_n$ son los recursos que requiere consumir la tarea $i$ y $x_{it}:i\in\{1,2,...,n\},t\in\{1,2,...,h\}$ son variables binarias que representan realizar la tarea i en el momento j.
 
+    Esta restricción se puede usar en problemas de planificación de tareas, de horarios y de proyectos; en problemas de gestión de ancho de banda en una red, en control de uso de recursos naturales, en optimización de consumo energético, entre muchos otros ejemplos.\\
     
     \item \textbf{Table}: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar tuplas y relaciones complejas entre variables.
     Ejemplo de uso:
@@ -463,6 +515,7 @@ A diferencia de la programación en enteros, que restringe su modelado a expresi
     $$\forall j(1\leq j\leq n):x_j=\sum_{i=1}^{|D|}a_i*d_{ij}$$
     Donde $d_ij$ es el valor del $j-$ésimo componente del $i-$ésimo elemento de $D$ y $a_1,a_2,...,a_n$ son variables binarias.
 
+    Algunos ejemplos de uso de esta restricción son en pn problemas de diseño o ensamblaje de productos, donde ciertas marcas sólo son compatibles con otras específicas; en problemas de asignación, donde una o más tareas solo puedan ser realizadas por ciertos trabajadores; o problemas logisticos, donde ciertos productos solo pueden ser transportados en tipos específicos de transporte.
     
 \end{itemize}
 
@@ -489,7 +542,70 @@ Para la modelación de cada problema, se realizó un modelo por cada paradigma. 
 Para cada clase de problema, una vez implementada la solución genérica en ambos paradigmas, se simulan diferentes instancias de la clase y se guardan los tiempos empleados. Una vez con los tiempos medidos, se agrupan los problemas según propiedades a analizar, y se investiga una posible correlación entre el desempeño de cada solución y la propiedad.
 
 \chapter{Resultados}
-Presentar las pruebas que apoyan tales resultados cumplidos de los objetivos, sea en forma de figuras, tablas o en el mismo texto. 
+
+De forma general, en los problemas analizados el paradigma de programación de satisfaccion de restricciones fue capaz de alcanzar el óptimo en menos tiempo que el paradigma de programación en enteros para entradas mas grandes. Si analizamos cada problema de forma individual:
+
+\begin{itemize}
+    \item \textbf{K-Coloración (Figura \ref{fig:K-Colorability})}: Si bien se puede notar una coorrelación entre el número de vértices y el desempeño de la programación entera, la evidencia apunta que el principal causante del mal desempeño de la programación entera es el propio número cromático.
+    
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{K-Colorability.png}
+    \caption{Resultados obtenidos en K-Coloración}
+    \label{fig:K-Colorability}
+    \end{figure}
+
+    
+    \item \textbf{Traveling Salesman Problem (Figura \ref{fig:TSP})}: En este problema se puede evidenciar como los casos promedios y peores casos del viajante son mayores en el paradigma de programación entera. Los picos alcanzados demuestran una gran ineficiencia de forma general para el paradigma de la programación entera.
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{TSP.png}
+    \caption{Resultados obtenidos en el problema del viajante}
+    \label{fig:TSP}
+    \end{figure}
+
+    \item \textbf{Bin Packing (Figura \ref{fig:BinPacking})}
+
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{BinPacking.png}
+    \caption{Resultados obtenidos en BinPacking}
+    \label{fig:BinPacking}
+    \end{figure}
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{SetCover.png}
+    \caption{Resultados obtenidos en SetCover}
+    \label{fig:SetCover}
+    \end{figure}
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Clique.png}
+    \caption{Resultados obtenidos en MaxClique}
+    \label{fig:Clique}
+    \end{figure}
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Portfolio.png}
+    \caption{Resultados obtenidos en Portfolio}
+    \label{fig:Portfolio}
+    \end{figure}
+
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{VPR.png}
+    \caption{Resultados obtenidos en VPR}
+    \label{fig:VPR}
+    \end{figure}
+
+\end{itemize}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                       CONCLUSIONES                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
