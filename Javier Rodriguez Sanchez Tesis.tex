@@ -39,13 +39,23 @@
 %%                            ABSTRACT                         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-The abstract should briefly summarize the contents of the paper in
-15--250 words.
+En esta tesis se realiza un análisis comparativo entre los paradigmas de programación entera (IP) y programación de satisfacción de restricciones (CSP), evaluando su desempeño en la solución de problemas discretos con restricciones. Se implementaron modelos de ambos paradigmas utilizando Ortools para clases de problemas como K-Coloración, Bin Packing, Set Cover, Traveling Salesman Problem, entre otros. Los resultados muestran que CSP ofrece un mejor rendimiento temporal en la mayoría de los casos, especialmente en instancias de gran escala o con alta complejidad combinatoria. Por otro lado, IP se desempeña de manera aceptable en problemas específicos como Set Cover, aunque enfrenta limitaciones en problemas más complejos. La investigación concluye que la elección del paradigma depende de las características del problema, pero resalta la flexibilidad y eficiencia de CSP en escenarios prácticos. Finalmente, se proponen trabajos futuros orientados a mejorar los algoritmos existentes, explorar nuevas clases de problemas y aplicar estos paradigmas en contextos industriales.
+
+% Abstract en inglés
+\end{abstract}
+
+\selectlanguage{english}
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract}
+This thesis presents a comparative analysis of Integer Programming (IP) and Constraint Satisfaction Programming (CSP) paradigms, evaluating their performance in solving discrete problems with constraints. Models for both paradigms were implemented using Ortools across various problem classes, including K-Coloring, Bin Packing, Set Cover, Traveling Salesman Problem, among others. The results demonstrate that CSP achieves better temporal performance in most cases, particularly for large-scale or highly combinatorial problems. Conversely, IP performs adequately in specific problems like Set Cover but struggles with more complex scenarios. The study concludes that paradigm selection depends on the problem's characteristics, highlighting CSP's flexibility and efficiency in practical applications. Future work is proposed to enhance existing algorithms, explore new problem classes, and apply these paradigms in industrial contexts.
 
 \end{abstract}
 %
 
 \newpage
+
+
+\selectlanguage{spanish}
 
 % Tabla de contenidos
 \tableofcontents
@@ -547,61 +557,71 @@ De forma general, en los problemas analizados el paradigma de programación de s
 
 \begin{itemize}
     \item \textbf{K-Coloración (Figura \ref{fig:K-Colorability})}: Si bien se puede notar una coorrelación entre el número de vértices y el desempeño de la programación entera, la evidencia apunta que el principal causante del mal desempeño de la programación entera es el propio número cromático.
-    
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{K-Colorability.png}
-    \caption{Resultados obtenidos en K-Coloración}
+    \includegraphics[width=0.5\textwidth]{K-Colorability.png}
+    \caption{Resultados obtenidos en K-Coloración: La programación entera mostró un desempeño ineficiente, afectada principalmente por el número cromático del grafo.}
     \label{fig:K-Colorability}
     \end{figure}
 
     
     \item \textbf{Traveling Salesman Problem (Figura \ref{fig:TSP})}: En este problema se puede evidenciar como los casos promedios y peores casos del viajante son mayores en el paradigma de programación entera. Los picos alcanzados demuestran una gran ineficiencia de forma general para el paradigma de la programación entera.
-
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{TSP.png}
-    \caption{Resultados obtenidos en el problema del viajante}
+    \includegraphics[width=0.5\textwidth]{TSP.png}
+    \caption{Resultados obtenidos en el problema del viajante: La programación entera tuvo un desempeño significativamente peor en los peores casos, con picos de ineficiencia.}
     \label{fig:TSP}
     \end{figure}
 
-    \item \textbf{Bin Packing (Figura \ref{fig:BinPacking})}
 
-
+    \item \textbf{Bin Packing (Figura \ref{fig:BinPacking})}: La unica correlación mostrada fue entre la eficiencia temporal y el número de objetos. La capacidad del bin y el número óptimo de bins no mostró signos de correlación. Nuevamente, se aprecia el mejor rendimiento de el paradigma de programación de restricciones. 
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{BinPacking.png}
-    \caption{Resultados obtenidos en BinPacking}
+    \includegraphics[width=0.5\textwidth]{BinPacking.png}
+    \caption{Resultados obtenidos en BinPacking: La programación de restricciones superó consistentemente a la programación entera en eficiencia temporal.}
     \label{fig:BinPacking}
     \end{figure}
 
+
+    \item \textbf{Set Cover (Figura \ref{fig:SetCover})}: En este problema, si bien el rendimiento de la programación entera fue mejor, la diferencia fue constante, y se puede considerar que ambos tuvieron un buen desempeño.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{SetCover.png}
-    \caption{Resultados obtenidos en SetCover}
+    \includegraphics[width=0.5\textwidth]{SetCover.png}
+    \caption{Resultados obtenidos en SetCover: Ambos paradigmas tuvieron un desempeño similar, con una ligera ventaja para la programación entera en tiempo constante.}
     \label{fig:SetCover}
     \end{figure}
 
+
+    \item \textbf{Clique máximo (Figura \ref{fig:Clique})}: Los resultados son bastante inestables en este tipo de problemas, y no hay una coorrelación clara entre el rendimiento de los paradigmas y los parámetros del problema. Aunque es fácil notar un mejor rendimiento de forma general el el paradigma de satisfacción de restricciones. 
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{Clique.png}
-    \caption{Resultados obtenidos en MaxClique}
+    \includegraphics[width=0.5\textwidth]{Clique.png}
+    \caption{Resultados obtenidos en clique máximo: Resultados inestables en ambos paradigmas, pero el paradigma de restricciones fue más eficiente en promedio.}
     \label{fig:Clique}
     \end{figure}
 
+
+    \item \textbf{Portfolio (Figura \ref{fig:Portfolio})}: Los resultados de la programación entera en este problema fueron desastrozos, para parametros muy bajos el desempeño crece de forma exponencial, haciendo imposible analizarlo para casos con mas de 7 subconjuntos.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{Portfolio.png}
-    \caption{Resultados obtenidos en Portfolio}
+    \includegraphics[width=0.5\textwidth]{Portfolio.png}
+    \caption{Resultados obtenidos en Portfolio: La programación entera no fue viable para problemas con más de siete subconjuntos debido al crecimiento exponencial del tiempo.}
     \label{fig:Portfolio}
     \end{figure}
 
+
+    \item \textbf{Enrutamiento de vehículos (Figura \ref{fig:VPR})}: Si bien para un vehículo la diferencia entre los resultados no son notables, para dos o más transportes la programación entera ha tenido picos mas altos de forma reiterada, que crece a medida que aumenta el número de puntos de distribución.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.6\textwidth]{VPR.png}
-    \caption{Resultados obtenidos en VPR}
+    \includegraphics[width=0.5\textwidth]{VPR.png}
+    \caption{Resultados obtenidos en el problema de enrutamiento de vehículos: La programación entera mostró picos de ineficiencia al incrementar el número de puntos de distribución y vehículos.}
     \label{fig:VPR}
     \end{figure}
+
+    
+    \item \textbf{The Job Shop Problem}: La programación entera tuvo problemas significativos de escalabilidad, haciendo impracticable su uso en casos con múltiples tareas y máquinas. Para 4 trabajos de 4 tareas en solo una máquina; este paradigma demoró 4 horas en alcanzar el óptimo, lo cual hizo imposible la graficación de los resultados.
+
+
 
 \end{itemize}
 
@@ -610,8 +630,14 @@ De forma general, en los problemas analizados el paradigma de programación de s
 %%                       CONCLUSIONES                          %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Conclusiones}
-Se establece las conclusiones de cada asunto investigado, implicaciones para la teoría y resultados de las
-experiencias. Estos siempre estarán en relaciona los objetivos generales y específicos.
+
+La investigación comparativa entre la programación entera (IP) y la programación de satisfacción de restricciones (CSP) evidencia que cada paradigma tiene fortalezas particulares dependiendo del tipo de problema analizado y las características de las instancias consideradas. \\
+
+En cuanto a desempeño general, en problemas con un número elevado de restricciones y gran cantidad de variables, el paradigma de satisfacción de restricciones demostró ser más eficiente, alcanzando soluciones óptimas en menos tiempo; y en cuanto a escalabilidad y eficiencia, el paradigma CSP demostró ser más adecuado para problemas que requieren flexibilidad y capacidad de modelado más natural y declarativo. \\
+
+La programación entera, aunque útil, mostró un desempeño más limitado, especialmente en instancias complejas y de gran escala. La programación entera sigue siendo una herramienta poderosa, pero su eficiencia depende en gran medida de la formulación del modelo y las técnicas empleadas, como ramificación y planos cortantes.\\
+
+En conclusión, el paradigma de programación de satisfacción de restricciones, apoyado en herramientas como Ortools, resulta una alternativa eficiente y robusta frente a la programación entera, especialmente en problemas complejos y de gran escala. Sin embargo, la decisión entre paradigmas debe considerar las características específicas del problema y los recursos computacionales disponibles.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                       BIBLIOGRAFÍA                          %%
