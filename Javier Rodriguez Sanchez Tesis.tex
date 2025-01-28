@@ -540,7 +540,7 @@ Para llevar a cabo la comparación entre ambos paradigmas, fueron utilizadas las
 \begin{itemize}
 \item \textbf{K-Coloración}: determinar el número cromático de un grafo, en otras palabras, la menor cantidad de colores necesarios para colorear sus vértices sin que dos vértices vecinos (unidos por una arista) tengan el mismo color.\\
 
-Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.
+Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.\\
 
 Modelación IP:
 
@@ -567,7 +567,7 @@ Donde $x_i$ es el color del nodo $i$, $c$ es el número de colores usados, la re
 
 \item \textbf{Traveling Salesman Problem (TSP)}: Dado un grafo ponderado completo, encontrar el ciclo simple que pase por todos los nodos tal que la suma de aristas sea mínima.
 
-Sea un grafo completo de $n$ nodos donde $a_{ij}$ es el costo de la arista $<i,j>$.
+Sea un grafo completo de $n$ nodos donde $a_{ij}$ es el costo de la arista $<i,j>$.\\
 
 Modelo IP:
 
@@ -592,7 +592,7 @@ Donde $x_i$ indica la ciudad que será visitada después de $i$ y $v_i$ el costo
 
 \item \textbf{Bin Packing}: Dado una cantidad de objetos de diferentes tamaños determinar el menor número de agrupaciones que se pueden formar tal que la suma total dentro de un grupo no exceda cierto valor.
 
-Sean $a_1, a_2,...a_n$ los tamaños de los objetos y C la capacidad de un bin:
+Sean $a_1, a_2,...a_n$ los tamaños de los objetos y C la capacidad de un bin.\\
 
 Modelo IP:
 $$min:\sum b_i$$
@@ -615,7 +615,7 @@ Aquí, el problema de BinPacking, se puede ver como un problema de producción, 
 
 \item \textbf{Portfolio}: Dado un conjunto, determinar la combinación de cierta cantidad de subconjuntos de determinado tamaño que minimice la intersección 2 a 2 de dichos conjuntos.
 
-Sea $n$ la cantidad de elementos del conjunto, $b$ la cantidad de subconjuntos y $r$ el tamaño de los subconjuntos.
+Sea $n$ la cantidad de elementos del conjunto, $b$ la cantidad de subconjuntos y $r$ el tamaño de los subconjuntos.\\
 
 Modelo IP:
 $$min \sum_{i=0}^n\sum_{j=0}^b\sum_{k=0}^by_{ijk}$$
@@ -638,9 +638,82 @@ $$\forall i: c_i\in \mathbb{N}$$
 Donde $x_{ij}$ representa que el elemento $i$ pertenece al subconjunto $j$, y $c_i$ representa la cantidad de coincidencias dos a dos del elemento $i$. La restricción $(I)$ restringe la cardinalidad de los subconjuntos a $r$, mientras que la restricción $(II)$ calcula la cantidad de intercepciones dos a dos que existen para el elemento $i$ y se las asigna a $c_i$. Si el elemento $i$ esta presente en $p$ subconjuntos, entonces hay $\binom{p}{2}$ intercepciones dos a dos.
 
 \item \textbf{Max-Clique}: hallar el mayor conjunto de vértices de un grafo tal que para todo par de vértices hay una arista que los une.
+
+Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.\\
+
+Modelo IP:
+$$max \sum_{i=0} x_i$$
+$$s.a.$$
+$$(I):\forall i,j: x_i+x_j-a_{ij}\leq 1$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Modelo CSP:
+$$max \sum_{i=0} x_i$$
+$$s.a.$$
+$$(I):\forall <i,j> \in E:Table([x_i,x_j],[[0,0],[1,0],[0,1]])$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Donde, en ambos casos, $x_i$ indica si el nodo $i$ es parte del clique de mayor tamaño y la restricción $(I)$ prohibe escoger a la vez nodos que no esten conectados entre sí.
+
 \item \textbf{Set Cover}: Dado un conjunto y una lista de subconjuntos de este encontrar la menor cantidad entre los subconjuntos cuya unión resulte en el conjunto original.
+
+Dado un conjunto de $n$ elementos y m subconjuntos del mismo. Sea $a_ij=1$ si el elemento i-ésimo pertenece al subconjunto j-ésimo. El modelo usado por ambos paradigmas:
+
+$$min \sum_{i=0}^m x_i$$
+$$s.a.$$
+$$(I) \forall i:\sum_{j=0}^mx_{j}*a_{ij}\geq1$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Donde $x_j$ representa escoger o no el conjunto j-ésimo en la conbertura mínima.
+
 \item \textbf{Vehicle Routing Problem(VRP)}:  Hallar el conjunto óptimo de rutas para una flota de vehículos que debe satisfacer las demandas de un conjunto dado de clientes.
+
+Para esta instancia de VRP, se decidió analizar el caso donde hay un almacén, varios puntos donde hay que entregar una determinada cantidad de objetos de un solo viaje, contando con cierta cantidad de camiones.\\
+
+Sea $a_i$ la demanda del i-ésimo punto ($a_0=0$ por ser el almacén), $n$ la cantidad de puntos, $c_{ij}$ el costo de ir del punto $i$ al punto $j$, $b$ la cantidad de camiones. La modelación seguida por ambos paradigmas es:
+
+$$min \sum_{i=0}^n\sum_{j=0}^n\sum_{k=0}^bc_{ij}*x_{ijk}$$
+$$s.a.$$
+$$(I):\forall i(i\neq0):\sum_{j=0}^n\sum_{k=0}^bx_{ijk}=1$$
+$$(II):\forall i\forall k :\sum_{j=0}^nx_{ijk}-\sum_{j=0}^nx_{jik}=0$$
+$$(III):\forall k:\sum_{i=0}^nx_{0ik}\geq1$$
+$$(IV):\forall k:\sum_{i=0}^nx_{i0k}\geq1$$
+$$(V):\forall i\forall j\forall k ((j\neq i\neq0)):o_i\leq o_j+n*(1-x_{ijk})$$
+$$\forall i\forall j\forall k:x_{ijk}\in\{0,1\}$$
+$$\forall i\forall j\forall k:o_{i}\in\mathbb{N}$$
+
+Donde $x_{ijk}$ representa que el vehículo k irá del punto i al punto j y $o_i$ indica el orden en que se visitará el nodo $i$. La restricción $(I)$ asegura la visita de todos los puntos, la restricción $(II)$ obliga a que los camiones entren en todo punto la misma cantidad de veces que salen. Las restricciones $(III)$ y $(IV)$ aseguran ir y regresar a la base; y la restricción $(V)$ evita subciclos.
+
+
 \item \textbf{The Job Shop Problem (JSP)}: Hallar la mínima cantidad de tiempo que hace falta para realizar un conjunto de trabajos sin que estos se solapen. Cada trabajo está caracterizado por un conjunto de tareas, las cuales deben hacerse en máquinas específicas.\\
+
+Dado $n$ trabajos y $q$ máquinas, sea $d_{ij}$ la duración de la tarea j-ésima del trabajo i-ésimo y $m_{ij}$ la máquina en la cual debe realizarse y sea $h=(\sum_{i=0}^n\sum_{j=0}d_{ij})$ la suma de todas las duraciones.\\
+
+Modelo IP:
+
+$$min: y$$
+$$s.a.$$
+$$(I):\forall i \forall j: x_{ij}-x_{i(j+1)} \leq d_{ij}$$
+$$(II):\forall i \forall j \forall k \forall l(m_{ij}=m_{kl}): x_{ij}+t_{ij}-x_{kl} \leq \alpha_{ijkl}*h$$
+$$(III):\forall i \forall j \forall k \forall l(m_{ij}=m_{kl}): x_{kl}+t_{kl}-x_{ij} \leq (1-\alpha_{ijkl})*h$$
+$$\forall i\forall j:x_{ij}+d_{ij}\leq y$$
+$$\forall i\forall j: x_{ij}\in\mathbb{N}$$
+$$y\in\mathbb{N}$$
+$$\forall i\forall j\forall k\forall l:\alpha_{ijkl}\in\{0,1\}$$
+
+Donde $y$ representa el tiempo mínimo de realización de todas las tareas, $x_{ij}$ es el tiempo de inicio de la tarea $j$ del trabajo $i$ y $\alpha_{ijkl}$ indica si la tarea $j$ del trabajo $i$ se realizará después de la tarea $l$ del trabajo $k$. La restricción (I) permite respetar el orden de las tareas de un mismo trabajo, la restricción $(II)$ Y $(III)$ evita solapamientos en una misma máquina.\\
+
+Modelo CSP:
+$$min: y$$
+$$s.a.$$
+$$(I):\forall i \forall j: x_{ij}-x_{i(j+1)} \leq d_{ij}$$
+$$(II): \forall p: cumulative([x_{ij}|m_{ij}=p],[d_{ij}|m_{ij}=p],[1,..,1],1)$$
+$$\forall i\forall j:x_{ij}+d_{ij}\leq y$$
+$$\forall i\forall j: x_{ij}\in\mathbb{N}$$
+$$y\in\mathbb{N}$$
+
+Este modelo, a diferencia del de programacion entera,se aprovechó las bondades de la restricción $cumulative$, permmitiendo asegurar de forma más intuitiva los intervalos.
+
 
 \end{itemize}
 
@@ -656,65 +729,72 @@ De forma general, en los problemas analizados el paradigma de programación de s
     \item \textbf{K-Coloración (Figura \ref{fig:K-Colorability})}: Si bien se puede notar una coorrelación entre el número de vértices y el desempeño de la programación entera, la evidencia apunta que el principal causante del mal desempeño de la programación entera es el propio número cromático.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{K-Colorability.png}
+    \includegraphics[width=1\textwidth]{K-Colorability.png}
     \caption{Resultados obtenidos en K-Coloración: La programación entera mostró un desempeño ineficiente, afectada principalmente por el número cromático del grafo.}
     \label{fig:K-Colorability}
     \end{figure}
 
+\newpage
     
     \item \textbf{Traveling Salesman Problem (Figura \ref{fig:TSP})}: En este problema se puede evidenciar como los casos promedios y peores casos del viajante son mayores en el paradigma de programación entera. Los picos alcanzados demuestran una gran ineficiencia de forma general para el paradigma de la programación entera.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{TSP.png}
+    \includegraphics[width=1\textwidth]{TSP.png}
     \caption{Resultados obtenidos en el problema del viajante: La programación entera tuvo un desempeño significativamente peor en los peores casos, con picos de ineficiencia.}
     \label{fig:TSP}
     \end{figure}
 
+\newpage
 
     \item \textbf{Bin Packing (Figura \ref{fig:BinPacking})}: La unica correlación mostrada fue entre la eficiencia temporal y el número de objetos. La capacidad del bin y el número óptimo de bins no mostró signos de correlación. Nuevamente, se aprecia el mejor rendimiento de el paradigma de programación de restricciones. 
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{BinPacking.png}
+    \includegraphics[width=1\textwidth]{BinPacking.png}
     \caption{Resultados obtenidos en BinPacking: La programación de restricciones superó consistentemente a la programación entera en eficiencia temporal.}
     \label{fig:BinPacking}
     \end{figure}
 
+\newpage
 
     \item \textbf{Set Cover (Figura \ref{fig:SetCover})}: En este problema, si bien el rendimiento de la programación entera fue mejor, la diferencia fue constante, y se puede considerar que ambos tuvieron un buen desempeño.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{SetCover.png}
+    \includegraphics[width=1\textwidth]{SetCover.png}
     \caption{Resultados obtenidos en SetCover: Ambos paradigmas tuvieron un desempeño similar, con una ligera ventaja para la programación entera en tiempo constante.}
     \label{fig:SetCover}
     \end{figure}
 
+\newpage
 
     \item \textbf{Clique máximo (Figura \ref{fig:Clique})}: Los resultados son bastante inestables en este tipo de problemas, y no hay una coorrelación clara entre el rendimiento de los paradigmas y los parámetros del problema. Aunque es fácil notar un mejor rendimiento de forma general el el paradigma de satisfacción de restricciones. 
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{Clique.png}
+    \includegraphics[width=1\textwidth]{Clique.png}
     \caption{Resultados obtenidos en clique máximo: Resultados inestables en ambos paradigmas, pero el paradigma de restricciones fue más eficiente en promedio.}
     \label{fig:Clique}
     \end{figure}
 
+\newpage
 
-    \item \textbf{Portfolio (Figura \ref{fig:Portfolio})}: Los resultados de la programación entera en este problema fueron desastrozos, para parametros muy bajos el desempeño crece de forma exponencial, haciendo imposible analizarlo para casos con mas de 7 subconjuntos.
+    \item \textbf{Portfolio (Figura \ref{fig:Portfolio})}: Los resultados de la programación entera en este problema no fueron nada viables, ya que para parámetros muy bajos el desempeño crece de forma exponencial, haciendo imposible analizarlo para casos con más de 7 subconjuntos.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{Portfolio.png}
+    \includegraphics[width=1\textwidth]{Portfolio.png}
     \caption{Resultados obtenidos en Portfolio: La programación entera no fue viable para problemas con más de siete subconjuntos debido al crecimiento exponencial del tiempo.}
     \label{fig:Portfolio}
     \end{figure}
 
+\newpage
 
     \item \textbf{Enrutamiento de vehículos (Figura \ref{fig:VPR})}: Si bien para un vehículo la diferencia entre los resultados no son notables, para dos o más transportes la programación entera ha tenido picos mas altos de forma reiterada, que crece a medida que aumenta el número de puntos de distribución.
     \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{VPR.png}
+    \includegraphics[width=1\textwidth]{VPR.png}
     \caption{Resultados obtenidos en el problema de enrutamiento de vehículos: La programación entera mostró picos de ineficiencia al incrementar el número de puntos de distribución y vehículos.}
     \label{fig:VPR}
     \end{figure}
 
+\newpage
     
     \item \textbf{The Job Shop Problem}: La programación entera tuvo problemas significativos de escalabilidad, haciendo impracticable su uso en casos con múltiples tareas y máquinas. Para 4 trabajos de 4 tareas en solo una máquina; este paradigma demoró 4 horas en alcanzar el óptimo, lo cual hizo imposible la graficación de los resultados.
 
