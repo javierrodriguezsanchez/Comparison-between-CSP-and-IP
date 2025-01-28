@@ -70,7 +70,7 @@ La formulación de problemas reales en diversos campos de estudio frecuentemente
 
 La mayoría de los problemas prácticos que requieren solución son problemas discretos con restricciones, donde las variables están limitadas a dominios finitos. Sin embargo, la cantidad de variables involucradas puede ser considerable, lo que genera combinaciones exponenciales y, por ende, una explosión combinatoria (un crecimiento rápido e incontrolado en el número de posibles combinaciones) en la búsqueda de soluciones viables. La versión más compleja de estos problemas se agrupa bajo el concepto de optimización discreta, que pertenece a la categoría NP-completa. Esta complejidad ha impulsado el desarrollo de técnicas computacionales para mejorar la eficiencia en su resolución.  \\
 
-La programación entera(IP) se erige como una herramienta crucial en la resolución de problemas que requieren decisiones discretas, donde las variables de decisión están restringidas a valores enteros. Esta técnica es un subconjunto de la programación matemática y se utiliza ampliamente en diversas aplicaciones prácticas, como la gestión de la cadena de suministro, la planificación de proyectos, la asignación de recursos, etc. La formulación de un problema de optimización entera implica definir una función objetivo que se desea maximizar o minimizar, junto con un conjunto de restricciones que limitan las posibles soluciones.  \\
+La programación entera(IP) se erige como una herramienta crucial en la resolución de problemas que requieren decisiones discretas, donde las variables de decisión están restringidas a valores enteros. Esta técnica es un subconjunto de la programación matemática y se utiliza ampliamente en diversas aplicaciones prácticas, como la gestión de la cadena de suministro, la planificación de proyectos, la asignación de recursos, etc. La formulación de un problema de optimización entera implica definir una función objetivo que se desea maximizar o minimizar, condicionada por un conjunto de restricciones que limitan las posibles soluciones.  \\
 
 Además, en las últimas décadas, el campo de la Inteligencia Artificial (IA) ha visto emerger nuevas formas de modelar problemas de satisfacción de restricciones, especialmente dentro del ámbito de la lógica computacional. Esto ha dado lugar a la programación de satisfacción de restricciones (CSP), que se presenta como una vía alternativa a la programación entera.  \\
 
@@ -82,8 +82,7 @@ El objetivo general de esta tesis es comparar la eficiencia temporal de los para
 Objetivos específicos
 \begin{enumerate}
 \item Seleccionar diferentes clases de problemas discretos que permitan evidenciar las diferencias entre ambos paradigmas.
-\item Someter a modelaciones diferentes, una como problema de satisfacción de restricciones y otra como modelo de optimización entera.
-\item Simular diferentes especificaciones de las clases de problemas para poder comparar los resultados de ambos modelos.
+\item Someter a modelaciones diferentes, una como problema de satisfacción de restricciones y otra como modelo de optimización entera; para luego simular diferentes especificaciones de las clases de problemas y comparar los resultados de ambos modelos.
 \item Buscar diferentes especificaciones de las clases de problemas para poder comparar los resultados de ambos modelos.\\
 \end{enumerate}
 
@@ -338,7 +337,7 @@ Este procedimiento es conocido como método de eliminación de cuantificadores, 
 
 Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2 \land (p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
 
-Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. Como se indica en el psudocódigo de la figura \ref{fig:dp}, este algoritmo realiza los siguientes pasos:
+Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. Como se indica en el pseudocódigo de la figura \ref{fig:dp}, este algoritmo realiza los siguientes pasos:
 \begin{enumerate}
     \item Por cada cláusula  unitaria, se elimninan todas las cláusulas que compartan dicho literal. Luego, se elimina el literal complementario del resto de cláusulas.
     \item Se eliminan todas las cláusulas que contengan literales complementarios.
@@ -436,7 +435,7 @@ Otras formas de consistencia existentes son la consistencia de camino y la $k$-c
 
 \subsection{Restricciones globales de la programación de satisfacción de restricciones}
 
-A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, en la programación por restricciones, los modelos suelen expresarse en forma de predicados, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. \\
+A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, en la programación de restricciones, los modelos suelen expresarse en forma de predicados, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. \\
 
 El lenguaje de la lógica de predicados está conformado por constantes, variables, funciones n-arias, relaciones n-arias y operadores proposicionales y existenciales. Se denomina término a una constante individual, a una variable o $f(t_1,t_2,...,t_n)$ donde $f$ es una función n-aria y $t_1,t_2,...,t_n$ son términos. En este contexto, una restricción es una fórmula lógica de la forma $p(t_1,t_2,...,t_n)$, donde $p$ es una relación n-aria y $t_1,t_2,...,t_n$ son términos. Finalmente, un lenguaje de restricciones es un conjunto de funciones y relaciones que se aplican sobre un dominio dado. \\
 
@@ -529,6 +528,9 @@ La programación de restricciones no sólo incluye la restricción de desigualda
     
 \end{itemize}
 
+Para evidenciar la utilidad y comodidad a la hora de representar problemas de las restricciones planteadas anteriormente, algunas de estas serán usadas en el siguiente capítulo a la hora de modelar los diferentes problemas que serán analizados. 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                  EXPLICACIÓN DEL CÓDIGO                     %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -536,12 +538,107 @@ La programación de restricciones no sólo incluye la restricción de desigualda
 
 Para llevar a cabo la comparación entre ambos paradigmas, fueron utilizadas las siguientes clases de problemas:
 \begin{itemize}
-\item \textbf{Bin Packing}: Dado una cantidad de objetos de diferentes tamaños determinar el menor número de agrupaciones que se pueden formar tal que la suma total dentro de un grupo no exceda cierto valor.
-\item \textbf{K-Coloración}: determinar el número cromático de un grafo, en otras palabras, la menor cantidad de colores necesarios para colorear sus vértices sin que dos vértices vecinos (unidos por una arista) tengan el mismo color.
-\item \textbf{Max-Clique}: hallar el mayor conjunto de vértices de un grafo tal que para todo par de vértices hay una arista que los une.
-\item \textbf{Portfolio}: Dado un conjunto, determinar la combinación de cierta cantidad de subconjuntos de determinado tamaño que minimice la intersección 2 a 2 de dichos conjuntos.
-\item \textbf{Set Cover}: Dado un conjunto y una lista de subconjuntos de este encontrar la menor cantidad entre los subconjuntos cuya unión resulte en el conjunto original.
+\item \textbf{K-Coloración}: determinar el número cromático de un grafo, en otras palabras, la menor cantidad de colores necesarios para colorear sus vértices sin que dos vértices vecinos (unidos por una arista) tengan el mismo color.\\
+
+Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.
+
+Modelación IP:
+
+$$min: \sum_{k=1}^nc_k$$
+$$s.a.$$
+$$(I): \forall i: \sum_{k=1}^nx_{ik}=1$$
+$$(II): \forall i\forall j \forall k: x_{ik}+x_{jk} \leq 2-a_{ij}$$
+$$(III): \forall k: \sum_{i=1}^nx_{ik} -n*c_k\leq 0$$
+$$\forall i\forall k: x_{ik}\in\{0,1\}$$
+$$\forall k: c_{k}\in\{0,1\}$$
+
+Donde $x_{ik}$ indica si el nodo $i$ pertenece o no al color $k$, $c_k$ dicta si el color $k$ es usado o no. La restricción $(I)$ obliga a que cada nodo esté en uno y solo un color. La restricción $(II)$ evita que dos nodos enlazados por una arista pertenezcan al mismo color. La restricción $(III)$ hace que, si un nodo esta está en un color $k$, el color cuente como utilizado. Si bien no se expone como restricción que todo color no usado debe ser 0, la propia minimización se encarga de anular aquellos colores que no se usen.\\
+
+Modelo CSP:
+
+$$min: c$$
+$$s.a.$$
+$$(I):\forall <i,j> \in E: x_i\neq x_j$$
+$$(II):\forall i: x_i\leq c$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Donde $x_i$ es el color del nodo $i$, $c$ es el número de colores usados, la restricción $(I)$ evita que dos nodos esten en el mismo color y la restricción $(II)$ iguala $c$ al número del color más alto.
+
+
 \item \textbf{Traveling Salesman Problem (TSP)}: Dado un grafo ponderado completo, encontrar el ciclo simple que pase por todos los nodos tal que la suma de aristas sea mínima.
+
+Sea un grafo completo de $n$ nodos donde $a_{ij}$ es el costo de la arista $<i,j>$.
+
+Modelo IP:
+
+$$min: \sum_{i=1}^n\sum_{j=1}^n x_{ij}a_{ij}$$
+$$(I):\forall i: \sum_{j=1}x_{ij}=1$$
+$$(II):\forall j: \sum_{i=1}x_{ij}=1$$
+$$(III):\forall i,j (i\neq j\neq1):u_i-u_j+n*x_{ij}\leq n-1$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i: u_i\in \mathbb{N}$$
+
+Donde $x_{ij}$ indica se se irá de la ciudad $i$ a la ciudad $j$; y $u_i$ indica el orden en el que será visitada la ciudad $i$. La restricción $(I)$ indica que cada ciudad será visitada exactamente una vez, la restricción $(II)$ representa que la salida de una ciudad será única y la restricción $(III)$ obliga a cada ciudad a estar antes de la siguiente.\\
+
+Modelo CSP:
+
+$$min:\sum_{i=1}^n v_i$$
+$$s.a.$$
+$$(I):Circuit(x_1,x_2,...x_n)$$
+$$(II):\forall i:v_i=Element(x_i,a_{i1},a_{i2},...,,a_{in})$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Donde $x_i$ indica la ciudad que será visitada después de $i$ y $v_i$ el costo de hacer el viaje que parte de $i$. La restricción $(I)$ crea un ciclo halmintoneano con las variables $x_1,x_2,...,x_n$, y la restricción $(II)$ iguala $v_i$ al costo de viajar desde la ciudad $i$ a la ciudad $x_i$.
+
+\item \textbf{Bin Packing}: Dado una cantidad de objetos de diferentes tamaños determinar el menor número de agrupaciones que se pueden formar tal que la suma total dentro de un grupo no exceda cierto valor.
+
+Sean $a_1, a_2,...a_n$ los tamaños de los objetos y C la capacidad de un bin:
+
+Modelo IP:
+$$min:\sum b_i$$
+$$s.a.$$
+$$(I): \forall i: \sum_{j=1}^n x_{ij}*a_i\leq C$$
+$$(II):\forall j:\sum_{i=1}^n x_{ij} -n*b_j\leq0$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall j: b_j\in \{0,1\}$$
+
+Donde $x_{ij}$ indica la pertenencia o no del elemento $i$ al conjunto $j$ y $b_j$ indica el uso del j\_ésimo bin. La restricción $(I)$ evita que se supere la capacidad de un bin y la restricción $(II)$ obliga a señalar un bin como usado si existe al menos 1 elemento que pertenezca a dicho bin.\\
+
+Modelo CSP:
+$$min: b$$
+$$s.a.$$
+$$cumulative([x_1,...,x_n],[1,..,1],[a_1,...a_n],C)$$
+$$\forall i: x_i+1\leq b$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Aquí, el problema de BinPacking, se puede ver como un problema de producción, donde un bin es equivalente a una unidad de tiempo, la pertenencia de cada elemento a un único bin se reduce a que su duración solo es de 1, el tamaño de cada elemento es la cantidad de recursos que consume y $C$ es la máxima cantidad de recursos que se pueden consumir al mismo tiempo. Bajo esta interpretación, $x_i$ representa el momento en que empezó la tarea $i$ (y, por tanto, $x_i+1$ es el bin al que pertenece el elemento $i$) y $b$ es el tiempo óptimo total, y por tanto, representa el total de bins utilizados.
+
+\item \textbf{Portfolio}: Dado un conjunto, determinar la combinación de cierta cantidad de subconjuntos de determinado tamaño que minimice la intersección 2 a 2 de dichos conjuntos.
+
+Sea $n$ la cantidad de elementos del conjunto, $b$ la cantidad de subconjuntos y $r$ el tamaño de los subconjuntos.
+
+Modelo IP:
+$$min \sum_{i=0}^n\sum_{j=0}^b\sum_{k=0}^by_{ijk}$$
+$$s.a.$$
+$$(I):\forall j:\sum_{i=0}^n x_{ij}=r$$
+$$(II):\forall i \forall j \forall k(k\neq j):x_{ij}+x_{ik}-y_{ijk}\leq1$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i\forall j\forall k: y_{ijk}\in\{0,1\}$$
+
+Donde $x_{ij}$ representa que el elemento $i$ pertenece al subconjunto $j$, y el elemento $y_{ijk}$ indica que el subconjunto $j$ y el subconjunto $k$ tienen al elemento i en común. La restricción $(I)$ restringe la cardinalidad de los subconjuntos a $r$, mientras que la restricción $(II)$ calcula la cantidad de intercepciones dos a dos que existen.\\
+
+Modelo CSP:
+$$min \sum_{i=0}^n c_i$$
+$$s.a.$$
+$$ (I):\forall j:global\_cardinality(r,x_{1j},x_{2j}...,x_{nj})$$
+$$ (II):\forall i:c_i=element(\sum_{j=0}^b x_{ij},0,0,1...,\binom{b}{2})$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i: c_i\in \mathbb{N}$$
+
+Donde $x_{ij}$ representa que el elemento $i$ pertenece al subconjunto $j$, y $c_i$ representa la cantidad de coincidencias dos a dos del elemento $i$. La restricción $(I)$ restringe la cardinalidad de los subconjuntos a $r$, mientras que la restricción $(II)$ calcula la cantidad de intercepciones dos a dos que existen para el elemento $i$ y se las asigna a $c_i$. Si el elemento $i$ esta presente en $p$ subconjuntos, entonces hay $\binom{p}{2}$ intercepciones dos a dos.
+
+\item \textbf{Max-Clique}: hallar el mayor conjunto de vértices de un grafo tal que para todo par de vértices hay una arista que los une.
+\item \textbf{Set Cover}: Dado un conjunto y una lista de subconjuntos de este encontrar la menor cantidad entre los subconjuntos cuya unión resulte en el conjunto original.
 \item \textbf{Vehicle Routing Problem(VRP)}:  Hallar el conjunto óptimo de rutas para una flota de vehículos que debe satisfacer las demandas de un conjunto dado de clientes.
 \item \textbf{The Job Shop Problem (JSP)}: Hallar la mínima cantidad de tiempo que hace falta para realizar un conjunto de trabajos sin que estos se solapen. Cada trabajo está caracterizado por un conjunto de tareas, las cuales deben hacerse en máquinas específicas.\\
 
