@@ -841,6 +841,875 @@ on Proceedings, pp. 1--2. Publisher, Location (2010)
 
 \bibitem{ref_url1}
 Oct 2017
+\end{thebibliography}\documentclass[12pt]{report}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{amsfonts} 
+\usepackage{amsmath} 
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{tocloft} % Paquete para personalizar la tabla de contenidos
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhf{}
+\rhead{}
+\lhead{Universidad de la Habana}
+\rfoot{\thepage}
+
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+
+% Configuración de la tabla de contenidos
+\setcounter{secnumdepth}{3} % Numerar hasta subsubsecciones
+\setcounter{tocdepth}{3}    % Incluir hasta subsubsecciones en el índice
+
+
+\begin{document}
+%
+\date{
+    \begin{center}
+        \textbf{Universidad de la Habana} \\[0.5em]  % Nombre de la institución
+        Facultad de Matemática y Computación \\[0.5em]  % Facultad (si aplica)
+        \includegraphics[width=3cm]{Universidad_De_La_Habana.jpg} \\[1em] % Insertar el logo
+        \today  % Fecha actual
+    \end{center}
+}
+
+\title{Análisis Comparativo entre la programación entera y la programación de satisfacción de restricciones}
+
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Javier Rodríguez Sánchez\\[0.5em]
+        \textbf{Tutor:} Dr. Luciano García Garrido}
+
+\maketitle 
+
+\section*{Agradecimientos}
+Quiero agradecer a todas las personas que me han apoyado a lo largo de la carrera tanto en los momentos difíciles como en los felices, haciendo especial énfasis en mi mamá, mi papá, mi hermano y mi abuela, que Dios la ampare en su gloria. Un especial agradecimiento a mi tutor por haber permitido extraer la mejor versión de esta tesis y siempre haber estado presente, apoyándome en todo lo que estuvo a su alcance, así como a todas aquellas personas que, de una forma u otra, colaboraron con dedicación y paciencia (mucha paciencia) en mi formación como profesional a los distintos niveles. Finalmente, quiero especialmente mostrar mi gratitud por mis amigos y mis compañeros, por haber transformado mi etapa universitaria en un recuerdo especial.
+
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                            ABSTRACT                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+En esta tesis se realiza un análisis comparativo entre los paradigmas de programación entera (IP) y programación de satisfacción de restricciones (CSP), evaluando su desempeño en la solución de problemas discretos con restricciones. Se implementaron modelos de ambos paradigmas utilizando Ortools para clases de problemas como K-Coloración, Bin Packing, Set Cover, Traveling Salesman Problem, entre otros. Los resultados muestran que CSP ofrece un mejor rendimiento temporal en la mayoría de los casos, especialmente en instancias de gran escala o con alta complejidad combinatoria. Por otro lado, IP se desempeña de manera aceptable en problemas específicos como Set Cover, aunque enfrenta limitaciones en problemas más complejos. La investigación concluye que la elección del paradigma depende de las características del problema, pero resalta la flexibilidad y eficiencia de CSP en escenarios prácticos. Finalmente, se proponen trabajos futuros orientados a mejorar los algoritmos existentes, explorar nuevas clases de problemas y aplicar estos paradigmas en contextos industriales.
+
+% Abstract en inglés
+\end{abstract}
+
+\selectlanguage{english}
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract}
+This thesis presents a comparative analysis of Integer Programming (IP) and Constraint Satisfaction Programming (CSP) paradigms, evaluating their performance in solving discrete problems with constraints. Models for both paradigms were implemented using Ortools across various problem classes, including K-Coloring, Bin Packing, Set Cover, Traveling Salesman Problem, among others. The results demonstrate that CSP achieves better temporal performance in most cases, particularly for large-scale or highly combinatorial problems. Conversely, IP performs adequately in specific problems like Set Cover but struggles with more complex scenarios. The study concludes that paradigm selection depends on the problem's characteristics, highlighting CSP's flexibility and efficiency in practical applications. Future work is proposed to enhance existing algorithms, explore new problem classes, and apply these paradigms in industrial contexts.
+
+\end{abstract}
+%
+
+\newpage
+
+
+\selectlanguage{spanish}
+
+% Tabla de contenidos
+\tableofcontents
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                        INTRODUCCIÓN                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introducción}
+
+La formulación de problemas reales en diversos campos de estudio frecuentemente se encuentra condicionada por la necesidad de satisfacer un conjunto de restricciones. Estas pueden ser tanto naturales como impuestas por el contexto del problema y son fundamentales para el desarrollo de soluciones efectivas. Por ejemplo, en la naturaleza, la velocidad de la luz establece un límite inquebrantable para todo objeto en movimiento; mientras que en biología, la configuración nativa de una proteína depende de combinaciones específicas de aminoácidos. En el ámbito matemático, especialmente en teoría de conjuntos y lógica, se han desarrollado lenguajes y herramientas que permiten representar y procesar estas restricciones a través de ecuaciones e inecuaciones. \\
+
+La mayoría de los problemas prácticos que requieren solución son problemas discretos con restricciones, donde las variables tienen dominios finitos. Sin embargo, la cantidad de variables involucradas puede ser considerable, lo que genera combinaciones exponenciales y, por ende, una explosión combinatoria de sus valores en la búsqueda de soluciones viables. La versión más compleja de estos problemas se agrupa bajo el concepto de optimización discreta, que pertenece a la clase NP-completa. Esta complejidad ha impulsado el desarrollo de técnicas computacionales para mejorar la eficiencia en su resolución.  \\
+
+La programación entera(IP) se erige como una herramienta crucial en la resolución de problemas que requieren decisiones discretas, donde las variables de decisión están restringidas a valores enteros. Esta técnica es un subconjunto de la programación matemática y se utiliza ampliamente en diversas aplicaciones prácticas, como la gestión de la cadena de suministro, la planificación de proyectos, la asignación de recursos, etc. La formulación de un problema de optimización entera implica definir una función objetivo que se desea maximizar o minimizar, condicionada por un conjunto de restricciones que limitan las posibles soluciones.  \\
+
+Además, en las últimas décadas, el campo de la Inteligencia Artificial (IA) ha visto emerger nuevas formas de modelar problemas de satisfacción de restricciones, especialmente dentro del ámbito de la lógica computacional. Esto ha dado lugar a la programación de satisfacción de restricciones (CSP), que se presenta como una vía alternativa a la programación entera.  \\
+
+La presente investigación, desarrollada en la Facultad de Matemática y Computación de la Universidad de La Habana, propone como pregunta científica: ¿qué paradigma utilizar para ganar eficiencia y aplicabilidad en las diferentes clases de problemas de optimización discretos, dadas las especificaciones que caracterizan a dicha clase?  \\
+
+El objetivo general de esta tesis es comparar la eficiencia temporal de los paradigmas de programación entera y programación de satisfacción de restricciones en la solución de diferentes clases de problemas discretos. \\
+
+
+Objetivos específicos
+\begin{enumerate}
+\item Seleccionar diferentes clases de problemas discretos que permitan evidenciar las diferencias entre ambos paradigmas.
+\item Someter a modelaciones diferentes, una como problema de satisfacción de restricciones y otra como modelo de optimización entera; para luego simular diferentes especificaciones de las clases de problemas y comparar los resultados de ambos modelos.
+\item Buscar diferentes especificaciones de las clases de problemas para poder comparar los resultados de ambos modelos.\\
+\end{enumerate}
+
+La tesis consta de otros cuatro capítulos. En el capítulo 2 se presenta el marco teórico de ambos paradigmas, empezando por la programación entera en la sección 2.1 y la programación de satisfacción de restricciones en la sección 2.2. En el capítulo 3 se hace referencia a las clases de problemas analizados y a los medios de implementación que son utilizados. Los resultados alcanzados son analizados en el capítulo 4, y las conclusiones son exhibidas en el capítulo 5. Además, al final de la tesis se pueden ver los modelos que fueron utilizados por ambos paradigmas en la implementación de las soluciones.\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                        MARCO TEÓRICO                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Marco Teórico}
+
+Un problema de optimización consiste en encontrar una asignación de valores a un conjunto de variables de forma que cumplan un conjunto de restricciones y maximicen o minimicen una función de costo. Estos se pueden clasificar de acuerdo con los valores que pueden tener las variables que intervienen. Si el dominio de alguna de sus variables es el conjunto de los enteros, estamos en un problema de optimización en enteros mixto. Dentro de la anterior categoría, se dice que se trabaja en enteros puros si todas sus variables son de dominio entero. Un caso especial en la anterior categoría es cuando todas las variables son binarias (pueden adoptar solamente 0 o 1 como valores).
+
+Estos problemas son fundamentales en diversas áreas como logística, planificación, asignación de tareas y, de forma general, todos aquellos escenarios donde se dispone de recursos limitados para realizar determinada acción. La naturaleza combinatoria de estos problemas a menudo implica que el número de soluciones posibles crezca exponencialmente con el tamaño del problema, lo que potencia la necesidad de descubrir nuevas técnicas y heurísticas para mejorar la eficiencia de los algoritmos exactos que garanticen soluciones óptimas. Dicha eficiencia depende, en primer lugar, de cómo se construyen los modelos y, en segundo lugar, de los métodos computacionales utilizados. 
+
+Para esto, se puede seguir dos paradigmas diferentes: la programación entera y la programación de satisfacción de restricciones.
+
+\section{Programación en enteros}
+
+La programación en enteros es un conjunto de herramientas ampliamente utilizadas para resolver el siguiente problema: dados $A$ y $B$ matrices, y $c$, $d$, $p$ y $q$ vectores, se desea determinar cuál es el máximo/mínimo que alcanza la función $c^Tx+d^Ty$ sujeto a las restricciones: $Ax\leq p$, $By\leq q$, $x\geq 0$, $y\geq 0$, $x\in \mathbb{R} ^n$, $y\in \mathbb{Z}^m$. \cite{Hooker} 
+
+
+\subsection{Programación lineal como base de la programación en enteros}
+
+El paradigma antes mencionado es una extensión de la programación lineal, ya que, de forma general, resolver un problema de programación en enteros requiere resolver uno o varios problemas lineales.\cite{Williams}\\
+
+El principal algoritmo utilizado para resolver un problema de optimización lineal es el método Simplex. Se centra en la resolución de los modelos en su llamada forma estándar: $min$ $c^Tx$ sujeto a $Ax=b$, $x\geq 0$.  Se dice que $x$ es solución factible de un problema lineal en su forma estándar si $Ax=b$. Si $x$ tiene un número de componentes nulas menor o igual al número de restricciones, se dice que $x$ es solución factible básica. De estas definiciones se deriva el Teorema Fundamental de la Programación Lineal, el cual garantiza que si existe una solución factible óptima, entonces también existe una solución factible básica óptima. Este teorema es la base del método Simplex, que consiste en explorar únicamente las soluciones factibles básicas del problema en búsqueda del óptimo.\\
+
+El primer paso del algoritmo es encontrar una solución factible básica. Una vez con esta, el algoritmo compara las evaluaciones entre la solución actual y las adyacentes (aquellas que se obtienen al cambiar un componente básico por uno no básico). Si ninguna solución adyacente tiene una evaluación menor que la actual, entonces se ha encontrado una solución óptima, lo cual se asegura debido a la convexidad del conjunto de soluciones factibles. De lo contrario, se cambia de solución factible básica y se repite el proceso.\\
+
+Aunque el método Simplex tiene un tiempo de ejecución exponencial en el peor de los casos, en la práctica, es muy eficiente y rápido para la mayoría de los problemas reales, siendo la herramienta por excelencia para la resolución de un problema de optimización lineal. 
+
+\subsection{Planos cortantes}
+
+La programación lineal es insuficiente cuando algunas de las variables son enteras. En el siguiente problema de optimización:
+
+$$max \text{ } 20x_1+10x_2+x_3$$
+$$s.a.$$
+$$3x_1+2x_2+10x_3=10$$
+$$2x_1+4x_2+20x_3=15$$
+$$x_1,x_2,x_3\geq 0$$\\
+
+La solución es: $x_1 = \frac54,x_2 = \frac{25}{8},x_3 = 0$. Sin embargo, si las variables involucradas fueran enteras, esta solución no es factible. La solución redondeada es: $x_1 = 1,x_2 = 3,x_3 = 0$, con valor de la función objetivo igual a 50. Sin embargo, la solución $x_1 = 2,x_2 = 2,x_3 = 0$ proporciona un valor de la función objetivo igual a 60. Por otra parte, la solución redondeada no satisface las restricciones del problema. Por tanto, resulta de interés diseñar algoritmos que manejen la condición de las variables de ser enteras.\\
+
+Una forma de extender la programación lineal a la programación entera podría plantearse como encontrar la menor cobertura convexa que contiene todas las asignaciones satisfacibles del problema. Si $S$ es el conjunto de asignaciones reales posibles del problema, $conv(S)$ se denota como la menor cobertura convexa del mismo. Ejemplo:
+
+$$max \text{ } 5x_1+6x_2$$
+$$s.a.$$
+$$10x_1+14x_2 \leq  35$$
+$$x_1,x_2\geq 0$$
+$$x_1,x_2\in\mathbb{Z}$$\\
+
+Como se muestra en la figura \ref{fig:cobertura convexa}, la menor cobertura convexa es:
+
+$$conv(S)=\{(x_1,x_2)|x_1+x_2\leq 3 \land x_1+2x_2\leq 4 \land x_1,x_2\geq 0\}$$
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{cobertura convexa.png}
+    \caption{En rojo las restricciones originales, en verde la menor cobertura convexa que contiene a las soluciones enteras.}
+    \label{fig:cobertura convexa}
+\end{figure}
+
+Si se utiliza Simplex para resolver este nuevo problema:
+
+$$max \text{ } 5x_1+6x_2$$
+$$s.a.$$
+$$(x,y) \in conv(S)$$
+$$x_1,x_2\in\mathbb{Z}$$
+
+Se obtiene la solución $x_1=2, x_2=1$.\\
+
+En la práctica, buscar la menor cobertura convexa es difícil e ineficiente. Sin embargo, es posible calcular algunas de las restricciones de una cobertura convexa que no descarte soluciones enteras y excluya soluciones reales a conveniencia. Se trata de trabajar con un conjunto convexo $Q$ tal que $conv(S)\subseteq Q\subseteq S$. Si en la asignación óptima de $Q$ las variables enteras poseen valores enteros, entonces esa es la solución del problema. De lo contrario, se busca un nuevo conjunto convexo $Q'$ que no incluya dicha solución, tal que $conv(S)\subseteq Q'\subseteq Q$. Este nuevo conjunto convexo se obtiene a partir de la introducción de una nueva restricción que no excluye variables reales. Y se repite el proceso.\\
+
+Todos los procedimientos basados en la explicación anteriormente planteada son conocidos como métodos de planos cortantes, y a las restricciones que se agregan se les denomina corte \cite{Williams}. Estos métodos comienzan con una relajación inicial de las restricciones de números enteros, lo que da como resultado una solución fraccionaria. Posteriormente, se añaden iterativamente cortes para reforzar la relajación hasta que se obtiene una solución entera.\\
+
+Existen varias técnicas para generar planos de corte, pero la mayoría se deriva del corte fundamental, y a partir de este se derivan los más usados, como el corte de Gomory, el corte Primal Todo Entero y el corte  de Chvátal-Gomory.\\
+
+
+\subsection{Ramificación y acotación}
+
+Sea un problema de optimización en enteros tal que, al resolver el problema relajado, una de sus variables enteras $x_i$ tenga un valor real $p$. Como su valor puede ser entero, se cumple que $x \leq  [p] \lor  x \geq  [p]+1$. Sabiendo esto, se pueden resolver 2 nuevos problemas de optimización, cada uno con las restricciones del problema original, adicionando las restricciones anteriores respectivamente a cada uno. Finalmente, el óptimo será el menor (si se está minimizando; de lo contrario, será el mayor) de los óptimos de ambas ramas. El método descrito es conocido como Ramificación y acotación.\cite{Williams} \\
+
+Por ejemplo:
+
+$$max \text{ } x_1 + x_2$$
+$$s.a.$$
+$$2x_1 + 2x_2 \geq  3$$
+$$-2x_1 + 2x_2 \leq  3$$
+$$4x_1 + 2x_2 \leq  19$$
+$$x_1, x_2 \geq  0$$
+$$x_1, x_2 \in \mathbb{Z}$$
+
+Solución óptima: $x_1=2.67, x_2=4.16, Objective=6.83$.\\
+
+Entonces, como se observa en las figuras \ref{fig:b&b} y \ref{fig:branch and bound}, el problema se divide en dos subproblemas distintos: uno con la restricción extra $x_1\leq 2$ (Caso 1) y otro con la restricción extra $x_1\geq 3$ (Caso 2).\\
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{b&b.png}
+    \caption{En azul las restricciones originales, las líneas discontinuas representan las restricciones introducidas. Los puntos rojos son las soluciones incorrectas, el resto son soluciones enteras factibles. En morado la dirección del gradiente. En verde la solución entera óptima. En amarillo la solución entera que es óptima en una de las ramas.}
+    \label{fig:b&b}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{branch and bound.png}
+    \caption{Cada flecha añade una restricción. Los casos en azul no tienen todas sus variables en enteros, las casos en rojo no tienen soluciones, el caso en verde ofrece el óptimo.}
+    \label{fig:branch and bound}
+\end{figure}
+
+Para el caso 1, la solución óptima es: $x_1=2, x_2=3.5, Objective=5.5$
+
+Para el caso 2 esta es: $x_1=2, x_2=3.5, Objective=6.5$.\\
+
+En este caso se puede seguir ramificando por ambas vías. Específicamente, si ramificamos el caso 2, este se dividiría en el caso donde $x_2\geq 4$ y el caso donde $x_2\leq 3$. Finalmente, tras otras dos ramificaciones, se puede llegar a que el óptimo es $x1=3, x2=3, Objective=6$.\\
+
+Ramificación y acotación es una técnica que permite explorar diferentes posibilidades de solución dividiendo el problema en subproblemas más manejables, mientras que los planos cortantes ayudan a eliminar soluciones no viables, mejorando la eficiencia del proceso de búsqueda. Ambas metodologías, aunque pueden ser aplicadas por separado, se complementan eficazmente en la búsqueda de soluciones óptimas. Dicha combinación es conocida como \textit{Branch and Cut}. 
+
+\subsection{Uso de variables binarias para la modelación de problemas}
+
+
+Es fundamental identificar qué problemas pueden ser representados como problemas de programación entera. Para ello, resulta interesante explorar cómo diversas restricciones representadas en el rico lenguaje de la lógica de predicados pueden ser modeladas en este contexto \cite{Williams}. Al comprender esta relación, se puede traducir enunciados lógicos complejos en formulaciones matemáticas que se pueden resolver mediante técnicas de optimización discreta, ampliando así el alcance de los problemas que podemos abordar.\\
+
+Suponga que se desea introducir las siguientes restricciones:
+
+$$ \sum_j a_{ij}x_j \leq  b_i \implies  \delta_i = 1$$
+$$  \delta_i = 1 \implies  \sum_j a_{ij}x_j \leq  b_i$$
+
+Si estas restricciones se logran, se podría saber cuántas restricciones se cumplen en un modelo, haciendo biyección entre una restricción y una variable binaria.\\
+
+Para la primera fórmula, al aplicar contrarrecíproco, se quiere que $\sum_j a_{ij}x_j > b_i$, pero si $\exists m:\sum_j a_{ij}x_j\geq  m$ , entonces se puede crear la restricción $\sum_j a_{ij}x_j \geq  b_i+\epsilon+(m-b-\epsilon)\delta_i$. De esa forma, si $\delta_i=1$ es una restricción redundante, si $\delta_i=0$ entonces fuerza a incumplir la restricción objetivo.\\
+
+Para la segunda, si $\exists M:\sum_j a_{ij}x_j\leq  M$ entonces se puede introducir la restricción $\sum_j a_{ij}x_j \leq  M-(M-b_i)\delta_i$. \\
+
+Luego, si no existieran dichos valores(máximos o mínimos alcanzables), entonces se dice que el problema no es MIP representable. Un ejemplo de esto sería: $x=0\lor  y=0$.\\
+
+Una vez haciendo biyección entre variables lógicas y restricciones lineales, se pueden construir operaciones lógicas elementales:
+
+$$\delta_1 \lor  \delta_2:\delta_1+\delta_2\geq 1$$
+$$\delta_1 \land \delta_2:\delta_1+\delta_2=2$$
+$$\neg\delta_1 :\delta_1=0$$
+$$\delta_1 \implies  \delta_2:\delta_1\leq  \delta_2$$
+$$\delta_1 \iff \delta_2:\delta_1=\delta_2$$
+
+De esta forma se podrían modelar problemas escritos en formas normales conjuntivas y disyuntivas.
+
+\section{Programación de satisfacción de restricciones}
+
+Una forma de analizar un problema de optimización es como un problema de satisfacción de restricciones, que consiste en una tupla $(V,D,C)$ donde $V$ es un conjunto de variables, $D=\{D_v|v\in V\}$ es el conjunto de los dominios de los posibles valores que pueden tomar cada variable, y $C$ es un conjunto finito de restricciones de la forma $(R_i,S_i)$, con $S_i$ es un subconjunto ordenado de $V$ y $R_i$ es una relación de tamaño $|S_i|$. Una solución es una asignación a cada variable que pertenece a $V$ con uno de sus correspondientes valores en $D$ tal que se cumplan todas las restricciones en $C$.
+
+La programación de satisfacción de restricciones (CSP) es aquella especializada en resolver este tipo de problemas. Algunas de las operaciones (por ejemplo, la ramificación) utilizadas son similares a las de IP, y tiene muchas características en común con los procedimientos de reducción que ahora se usan comúnmente para preprocesar modelos. Este enfoque no está concebido como un método de optimización propiamente, aunque se puede adaptar a él haciendo que el objetivo, con límites cada vez más estrictos, sea una restricción.
+
+\subsection{SAT como base de la satisfacción de restricciones}
+
+No siempre es obvio, con un solo problema, hasta qué punto se utiliza la lógica o se utilizan los métodos matemáticos propios de la programación entera. Sin embargo, hay una gran ventaja en poder moverse entre los dos y reconocer las relaciones entre ellos. En este sentido, la programación entera y la lógica son simbióticas.\cite{Williams}\\
+
+En este contexto, el problema de satisfacibilidad booleana (SAT) emerge como un caso paradigmático donde la lógica y la optimización discreta se cruzan. El Teorema de Cook, propuesto por Stephen Cook en 1971, es un hito fundamental en la teoría de la complejidad computacional, pues plantea que todo problema de la categoría NP es reducible a SAT, demostrando también la pertenencia de SAT a la clase NP-Completo. Este problema consiste en determinar, dada una fórmula lógica, si existe una interpretación de la misma tal que sea verdadera.\\ 
+
+Cuando los dominios de las variables son finitos, entonces cualquier fórmula de la lógica de predicados puede expresarse como una fórmula de la lógica proposicional. Esto es importante porque dicha lógica es consistente y completa. Se dice que un sistema es consistente si no se pueden derivar contradicciones dentro de él, es decir, no se puede demostrar que un enunciado sea verdadero y falso simultáneamente. Mientras que un sistema es completo si se puede deducir la veracidad o falsedad de cualquier enunciado que pueda ser formulado en el modelo del sistema. \\
+
+Todo lo anteriormente planteado permite resaltar la gran importancia que cobra la lógica en este tipo de problemas, pues es la que permite deducir enunciados a partir de otros en función de las reglas de deducción que lo conforman. Más específicamente, la lógica proposicional y la lógica de predicados proporcionan un marco teórico robusto para abordar los problemas NP.\\
+
+
+Como forma general, todo problema SAT se representa en su Forma Normal Conjuntiva(CNF), y todos los cuantificadores se sitúan al principio de la expresión (\textit{Prenex Normal Form}).
+
+Ejemplo:
+
+$$\forall x(\exists y(Q(y)\lor R(x))\implies P(x))$$
+Primero, se elimina la implicación utilizando la equivalencia $A→B\equiv \neg A\lor B$:
+$$\forall x(\neg\exists y(Q(y)\lor R(x)) \lor  P(x))$$
+A continuación, se aplica la equivalencia $\neg\exists y(A)\equiv \forall x(\neg A)$
+$$\forall x(\forall y\neg(Q(y)\lor R(x)) \lor  P(x))$$
+Luego, se mueven los cuantificadores hacia el exterior. Para esto último, se aplican las reglas de distribución de cuantificadores. En este caso, se puede mover el cuantificador universal hacia afuera:
+$$\forall x\forall y(\neg(Q(y)\lor R(x))\lor  P(x))$$
+Aplicando la equivalencia: $\neg(A\lor B)\equiv \neg A\land\neg B$
+$$\forall x\forall y((\neg Q(y)\land\neg R(x))\lor  P(x))$$
+Finalmente, utilizando la equivalencia $(A\land B)\lor C\equiv (A\lor C)\land(B\lor C)$
+$$\forall x\forall y((\neg Q(y)\lor  P(x))\land(\neg R(x)\lor  P(x)))$$\\
+
+En una forma normal conjuntiva, a una variable proposicional o su negación se le denomina literal, los cuales se pueden clasificar respectivamente en literales positivos o negativos. A las disyunciones de literales se les llama cláusulas. Una cláusula con un único literal se le conoce como cláusula unitaria. Dos literales son complementarios u opuestos si uno es la negación del otro. Un literal se denomina puro en una FNC si no está su literal complementario.
+
+A la hora de encarar un problema de optimización usando lógica de predicados, es necesario añadir funciones, constantes y reglas propias de la aritmética. Aunque la aritmética completa sea no decidible, hay "teorías" más pequeñas dentro de ella que sí lo son. Entre estas están la aritmética sin multiplicación y la teoría de orden lineal denso. Estas bastan para resolver cualquier modelo de optimización lineal.\\
+
+Observe lo anteriormente planteado en el siguiente ejemplo:
+
+$$max \text{ }z= 2x_1 + 3x_2 - x_3 $$
+$$s.a.$$
+$$ x_1 + x_2 \leq  3 $$
+$$ -x_1 + 2x_3 \geq  -2 $$
+$$ -2x_1 + x_2 - x_3 = 0 $$
+$$ x_1, x_2, x_3 \in \mathbb{R}  $$
+
+Esto planteado en lógica de predicados sería:
+
+$\exists z,x_1,x_2,x_3 ($
+$z - 2x_1 - 3x_2 + x_3 = 0$ $\land$
+$ x_1 + x_2 \leq  3 $ $\land$
+$ -x_1 + 2x_3 \geq  -2 $ $\land$
+$ -2x_1 + x_2 - x_3 = 0 $ $\land$
+$ x_1\geq  0 $ $\land$ 
+$ x_2\geq  0 $ $\land$ 
+$ x_3\geq  0 $ 
+$)$\\
+
+Luego, se puede despejar $x_3$ en la cuarta restricción y sustituir en el resto, eliminando así una variable del problema.
+
+$\exists z,x_1,x_2($
+$z - 2x_1 - 3x_2 + (-2x_1 + x_2) = 0$ $\land$
+$ x_1 + x_2 \leq  3 $ $\land$
+$ -x_1 + 2(-2x_1 + x_2) \geq  -2 $ $\land$
+$ x_1\geq  0 $ $\land$ 
+$ x_2\geq  0 $ $\land$ 
+$ -2x_1 + x_2\geq  0 $ 
+$)$\\
+
+De forma homóloga, se puede despejar la variable $x_2$ en la primera restricción:
+
+$\exists z,x_1 ($
+$ x_1 + \frac z 2 -2x_1 \leq  3 $ $\land$
+$ -5x_1 + 2(\frac z 2 -2x_1) \geq  -2 $ $\land$
+$ x_1\geq  0 $ $\land$ 
+$ \frac z 2 -2x_1 \geq  0 $ $\land$ 
+$ -2x_1 + \frac z 2 -2x_1 \geq  0 $
+$)$\\
+
+Luego se despeja la variable $x_1$ en todas las restricciones
+
+$\exists z (\exists x_1 ($
+$ \frac z 2 - 3 \leq   x_1 $ $\land$
+$ \frac z 9 + \frac 2 9 \geq  x_1 $ $\land$
+$ x_1\geq  0 $ $\land$ 
+$ \frac z 4 \geq  x_1 $ $\land$ 
+$ \frac z 8 \geq  x_1 $ $))$\\
+
+Notar que aquí se deduce que:
+
+$\exists z ($
+$ \frac z 2 - 3 \leq   \frac z 9 + \frac 2 9 $ $\land$
+$ \frac z 2 - 3 \leq  \frac z 4  $ $\land$
+$ \frac z 2 - 3 \leq  \frac z 8 $ $\land$
+$ 0 \leq   \frac z 9 + \frac 2 9 $ $\land$
+$ 0 \leq  \frac z 4  $ $\land$
+$ 0 \leq  \frac z 8 $ 
+$)$\\
+
+Concluyendo que $-2\leq  z \leq  8$. Y como el objetivo es maximizar. Se toma $z=8$. De aquí se observa que $0\leq  x_1 \leq 1$. Que tomando a $x_1=1$ queda que $x_2=2$ y $x_3 = 0$.\\
+
+Este procedimiento es conocido como método de eliminación de cuantificadores, que si bien no es utilizado actualmente por existir soluciones mucho más eficientes dentro de la programación lineal como el método Simplex, teóricamente demuestra que la programación lineal es una teoría decidible.\cite{Williams}
+
+\subsection{Davis-Putnam y Davis-Logemann-Loveland}
+
+Sea una instancia de SAT en CNF, sea $p$ una variable proposicional y sean $C_1=p \lor  Q_1$  y  $C_2 = \neg p \lor  Q_2$ cláusulas del problema, con $Q_1$ y $Q_2$ disyunciones de literales. Como $(p=1)\implies  Q_2 \land (p=0)\implies  Q_1$ se puede deducir $Q_1\lor  Q_2$. Este procedimiento es conocido como principio de resolución \cite{Williams}, y al aplicarlo iterativamente, podemos deducir posibles valores de los literales o una contradicción dentro de la fórmula lógica. En este último caso, se dice que el problema es insatisfacible.\\ 
+
+Usando como base el principio de resolución, emerge el algoritmo de Davis-Putnam(DP), el cual es el precursor de los algoritmos modernos para resolver SAT al establecer  un marco teórico importante para la lógica computacional. Como se indica en el pseudocódigo de la figura \ref{fig:dp}, este algoritmo realiza los siguientes pasos:
+\begin{enumerate}
+    \item Por cada cláusula  unitaria, se elimninan todas las cláusulas que compartan dicho literal. Luego, se elimina el literal complementario del resto de cláusulas.
+    \item Se eliminan todas las cláusulas que contengan literales complementarios.
+    \item Se eliminan todas las cláusulas con literales puros.
+    \item Si se obtiene la fórmula vacía, entonces se encontró una asignación satisfacible. 
+    \item Si la fórmula resultante contiene la cláusula vacía, se encontró una contradicción.
+    \item Se selecciona un literal y se aplica principio de resolución. Luego, se repiten los pasos anteriores.
+\end{enumerate}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dp speudocode.png}
+    \caption{Pseudocódigo de Davis-Putman}
+    \label{fig:dp}
+\end{figure}
+
+
+Obsérvese el siguiente ejemplo. ¿La siguiente fórmula será satisfacible?:
+$$(a\lor  b) \land(a\lor  \neg b) \land (\neg a\lor  c) \land(\neg a\lor  \neg c)$$
+
+Al aplicar la regla de resolución entre las primeras dos cláusulas se obtiene la nueva restricción $(a \lor  a)$, la cual es lógicamente equivalente a $(a)$. Si se aplica nuevamente resolución entre esta cláusula y las dos últimas, se deduce $(c)$ y $(\neg c)$. Al aplicar resolución se observa que se llega a un absurdo, por lo que la fórmula es insatisfacible. \\
+
+El algoritmo Davis-Putnam fue un punto de partida en la resolución de problemas de satisfacibilidad. Sin embargo, la resolución conduce a un crecimiento exponencial en la cantidad de cláusulas generadas y, por tanto, a una costosa complejidad espacial. Esto hace que este método sea inviable para problemas de gran escala y, en su lugar, se utilicen variantes más avanzadas del mismo.
+
+Una versión mejorada de DP para resolver problemas de clase SAT es mediante el uso de \textit{backtracking}, donde se realizan asignaciones a literales para encontrar una interpretación válida de la fórmula, mientras se comprueba consistencia en cada asignación con el fin de deshacerlas en caso de conflicto. Dicho cambio supera la complejidad espacial inherente de DP, lidiando solamente con la complejidad temporal. Este algoritmo es conocido como Davis-Putnam-Logemann-Loveland (DLL/DPLL).
+
+El algoritmo, como se muestra en el pseudocódigo de la figura \ref{fig:dpll pc}, tiene como base los siguientes pasos:
+\begin{enumerate}
+    \item Se hace un preprocesamiento donde se buscan todos los literales puros y se les asigna valor 1.
+    \item si todos los literales han sido asignados y no hay contradicciones, entonces se encontró una interpretación satisfacible de la fórmula.
+    \item Se asigna valor a un literal y se ramifica, eliminando todas las cláusulas que contenían dicho literal y eliminando el literal opuesto del resto de cláusulas.
+    \item Luego, si ocurre una contradicción, se deshacen asignaciones hechas y se exploran nuevos casos.\\
+\end{enumerate}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{dpll speudocode.png}
+    \caption{Pseudocódigo de Davis-Logemann-Loveland}
+    \label{fig:dpll pc}
+\end{figure}
+
+ 
+\textbf{Ejemplo de SAT utilizando DPLL}\\
+
+Considérese la siguiente fórmula en FNC:
+$F=(A\lor \neg B)\land(B\lor C)\land(\neg A\lor \neg C)\land(\neg B\lor \neg A)\land(D\lor \neg C)\land(\neg A\lor D)$\\
+
+Como se ve en la figura \ref{fig:DPLL}, DPLL procede de la siguiente forma:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{DPLL.png}
+    \caption{Funcionamiento del algoritmo DPLL}
+    \label{fig:DPLL}
+\end{figure}
+
+Se selecciona un literal y se le da valor $true$. Ejemplo:
+$$A=true$$
+Se eliminan las cláusulas que contienen a $A$ y al literal $\neg A$:
+$$F^I=(B\lor C)\land(\neg C)\land(\neg B)\land(D\lor \neg C)\land(D)$$
+Se repite el proceso:
+$$B=true$$
+$$F^{II}=(\neg C)\land()\land(D\lor \neg C)\land(D)$$
+Como se obtuvo una cláusula vacía, ocurrió una contradicción, por lo que se deben deshacer asignaciones:
+$$B=false$$
+$$F^{III}=(C)\land(\neg C)\land(D\lor \neg C)\land(D)$$
+Se continúa explorando:
+$$C=true$$
+$$F^{IV}=()\land(D)\land(D)$$
+Contradicción:
+$$C=false$$
+$$F^{V}=()\land(D)$$
+Contradicción:
+$$A=false$$
+$$F^{VI}=(\neg B)\land(B\lor C)\land(D\lor \neg C)$$
+Se asignan valores a B nuevamente:
+$$B=true$$
+$$F^{VII}=()\land(D\lor \neg C)$$
+Contradicción:
+$$B=false$$
+$$F^{VIII}=(C)\land(D\lor \neg C)$$
+Nuevamente se asigna un valor a C:
+$$C=true$$
+$$F^{IX}=(D)$$\\
+
+Finalmente, al hacer la asignación $D=true$ obtenemos que F es satisfacible para $A=B=false, C=D=true$.
+
+\subsection{Consistencia como forma de propagación de restricciones}
+
+Los algoritmos base de la satisfacción de restricciones planteados con anterioridad tienen en el peor de los casos una complejidad temporal exponencial, por lo que es necesario el uso de heurísticas que permitan acelerar la búsqueda de una solución satisfacible o, en su defecto, una contradicción dentro de las cláusulas.\\
+
+La principal forma de mejorar la eficiencia de los solucionadores de SAT es la propagación de restricciones (\textit{constraint propagation}), realizada mediante la comprobación de consistencia entre los valores de las variables. Es necesario precisar que el término consistencia utilizado en esta sección es diferente al usado en lógica, refiriéndose a la reducción de dominio de variables a aquellos valores que puedan pertenecer a una solución factible de un problema.\\
+
+La forma más básica de consistencia es la consistencia de nodo, que se cumple si y solo si todos los valores del dominio de una variable cumplen con todas las restricciones unarias. Suponga que se tiene una variable $x \in \{1,2,...,50\}$. Si existe una restricción donde $x$ tiene que ser par, entonces al restringir el dominio de $x$ a $\{2,4,...,50\}$, se cumple la consistencia de nodo.\\
+
+También se usa la consistencia de arco, alcanzada en una restricción $c$ sobre $n$ variables $x_1,x_2,...,x_n$ si y sólo si para todo $i$ y cualquier valor $v_i$ del dominio de la variable $x_i$ existen $v_1,...,v_{i-1},v_{i+1},...,v_n$ posibles valores de $x_1,...,x_{i-1},x_{i+1},...,x_n$ tal que $v_1,...,v_n$ satisfacen $c$ \cite{consistencia}. Uno de los algoritmos más utilizados para alcanzar dicho estado es el algoritmo AC-3, el cual guarda todos los pares ordenados de variables en una cola. Luego saca iterativamente cada uno de estos pares $<x,y>$ hasta que la cola se quede vacía, y comprueba la consistencia de arco para cada posible valor de $x$. Si un valor no cumple la consistencia de arcos, este valor es eliminado del dominio de $x$, y todos los pares de variables de la forma $<z,x>$ son reinsertados en la cola. El algoritmo tiene una complejidad de tiempo en el peor de los casos de $O(ed^3 )$, donde $e$ es la cantidad de pares y $d$ es el tamaño de dominio más grande. Tras aplicar la consistencia de arco, pueden surgir tres posibles escenarios: si todos los dominios de las variables quedan con exactamente 1 valor (en cuyo caso la asignación es satisfacible), si un dominio queda vacío (en cuyo caso ocurriría una contradicción y se debe retroceder en una asignación) o si al menos un dominio queda con más de un posible valor, en cuyo caso se le debe asignar un valor y volver a realizar consistencia de arco.\\
+
+Otras formas de consistencia existentes son la consistencia de camino y la $k$-consistencia. La consistencia de camino considera no solo las restricciones binarias entre pares de variables, sino también las relaciones a través de secuencias más largas de variables. Aquí, $u$ es un valor consistente de $x$ si para todo $y$ existe un $w$ tal que dado cualquier secuencia de variables $a_1, a_2, ... a_n$, con $a_1=x$ y $a_n=y$ tenga la secuencia de valores $v_1, v_2, ... v_n$ con $v_1=u$ y $v_n=w$ de forma que el par $<v_i,v_{i+1}>$ cumpla con todas las restricciones binarias entre $a_i$ y $a_{i+1}$, con $1\leq  i \leq  n$. Si bien la aplicación de la consistencia de camino garantiza un mayor nivel de consistencia que la consistencia del arco, todavía no es suficiente para resolver CSP en general. Esto significa que garantizando dicha consistencia, no todas las asignaciones garantizadas por esta son necesariamente soluciones satisfacibles. Por otra parte, la k-consistencia se logra al garantizar que cualquier asignación válida de valores a $k-1$ variables garantiza la posibilidad de asignación de un valor a cualquier otra variable. Se dice que se es fuertemente $k$-consistente si para todo $j<k$ se es $j$-consistente. Ambos tipos de consistencias son bastante costosos computacionalmente, por lo que no son muy utilizados en la práctica en comparación con la consistencia de arco.\\
+
+\subsection{Restricciones globales de la programación de satisfacción de restricciones}
+
+A diferencia de la programación en enteros, que restringe su modelado a expresiones lineales, en la programación de restricciones, los modelos suelen expresarse en forma de predicados \cite{Williams}, que si bien pudieran ser convertidos a modelos lineales, dicha conversión puede ser engorrosa. \\
+
+El lenguaje de la lógica de predicados está conformado por constantes, variables, funciones n-arias, relaciones n-arias y operadores proposicionales y existenciales. Se denomina término a una constante individual, a una variable o $f(t_1,t_2,...,t_n)$ donde $f$ es una función n-aria y $t_1,t_2,...,t_n$ son términos. En este contexto, una restricción es una fórmula lógica de la forma $p(t_1,t_2,...,t_n)$, donde $p$ es una relación n-aria y $t_1,t_2,...,t_n$ son términos. Finalmente, un lenguaje de restricciones es un conjunto de funciones y relaciones que se aplican sobre un dominio dado.\cite{Luciano} \\
+
+Se puede destacar que la programación entera mixta es un lenguaje de restricciones con las funciones $+, -, *$ y las relaciones $=,\leq,\geq$ y de integralidad \cite{articulo}. Sin embargo, en muchas situaciones, es conveniente modelar muchos más tipos de condiciones, o al menos hacerlo de forma más natural, intuitiva, declarativa y simple. El ejemplo perfecto es expresar la desigualdad entre dos variables $x$ y $y$. Mientras la programación entera mixta necesita expresarlo con dos restricciones y una variable binaria solo cuando las variables son acotadas, en la programación con restricciones se expresa de la forma $x\neq y$.\\
+
+La programación de restricciones no sólo incluye la restricción de desigualdad. La riqueza y versatilidad de la lógica de predicados de primer orden cuenta con un amplio repertorio de condiciones modeladas que se han reiterado numerosas veces en problemáticas reales, tales como evitar solapamientos en un conjunto de intervalos de diferentes longitudes, la búsqueda de ciclos halmintoneanos en grafos dirigidos, el uso de indexadores o la representación de complejas correlaciones entre valores de variables. Estos predicados suelen ser mucho más compactos que los modelos IP y suelen depender del software utilizado. Pero, de forma general, son restricciones globales que suelen ser semánticamente redundantes y permiten filtrar el dominio de las variables. \\
+
+
+\textbf{Restricciones globales fundamentales:}\\
+
+\begin{itemize}
+    \item \textbf{All Different}: Esta restricción fuerza a que todos los valores de las variables sean diferentes entre sí. Esto resuelve muchos modelos de optimización que no son capaces de resolver este tipo de restricciones mediante la programación entera.
+    
+    Ejemplo de uso:
+    $$All\_Different(x,y,z)$$
+    Equivalente en programación entera:
+    $$x\leq y-1+a_{xy}*(M_x-y+1)$$
+    $$x\geq m_x+a_{xy}*(y+1-m_x)$$
+    $$y\leq z-1+a_{yz}*(M_y-z+1)$$
+    $$y\geq m_y+a_{yz}*(z+1-m_y)$$
+    $$z\leq z-1+a_{zx}*(M_z-x+1)$$
+    $$z\geq m_z+a_{zx}*(x+1-m_z)$$
+    Donde $a_{xy},a{yz},a_{zx}$ son variables binarias, y $M_x,m_x,M_y,m_y,M_z,m_z$ son las respectivas cotas superiores e inferiores de $x,y,z$. Estas restricciones no se pueden hacer en variables con dominios no acotados. El número de restricciones y variables binarias crece exponencialmente con el número de variables.
+    Algunos problemas en los que se aplica esta restricción son en problemas de asignación de recursos, donde se necesite repartir $n$ tareas entre $n$ trabajadores diferentes; problemas de horarios, donde cada materia deba ser impartida en horarios diferentes; o problemas combinatorios, donde haga falta analizar permutaciones.\\
+    
+    \item \textbf{Global Cardinality}: Estas restricciones controlan la cantidad de veces que ciertos valores pueden aparecer en un conjunto de variables. Por ejemplo, global\_cardinality permite especificar cuántas veces debe aparecer cada valor en un \textit{array} de variables.
+    Ejemplo de uso:
+    $$Global\_Cardinality(V,c,x_1,x_2...,x_n)$$
+    Equivalente en programación entera:
+    $$\sum^n_{i=0} a_i \leq c$$
+    $$x_1\leq M_1 - a_1(M_1-V)$$
+    $$x_1\geq m_1 - a_1(m_1-V)$$
+    $$x_2\leq M_2 - a_1(M_2-V)$$
+    $$x_2\geq m_2 - a_1(m_2-V)$$
+    $$...$$    
+    $$x_n\leq M_n - a_1(M_n-V)$$
+    $$x_n\geq m_n - a_1(m_n-V)$$
+
+    Con $a_1,a_2,..a_n$ variables binarias y $M_1,M_2,...,M_n,m_1,m_2,...m_n$ cotas superiores e inferiores de $x_1,x_2,..,x_n$. Estas restricciones no se pueden hacer en variables con dominios no acotados.
+
+    Algunos problemas en los que se aplica esta restricción son en problemas de balanceo de líneas de producción, donde se quiera evitar la sobrecarga de una máquina, problemas logísticos, como evitar que cierta cantidad de productos exceda la capacidad del transporte; o problemas de planificación de horarios, donde un determinado suceso debe tener un número específico de frecuencias.\\
+    
+    \item \textbf{Circuit}: Asegura que un conjunto de variables forma un circuito, lo cual es esencial en problemas como el Traveling Salesman Problem. Esta restricción garantiza que no haya subcircuitos y que todos los nodos sean visitados.
+    
+    Ejemplo de uso:
+    $$Circuit(x_1,x_2...,x_n)$$
+    Equivalente en programación entera:
+    $$\forall i,j\in\{2,3,...,n\}i\neq j:x_i-x_j+(n-1)a_{ij}\leq n-2$$
+    $$\forall i\in\{2,3,...,n\}: 1\leq x_i\leq n-1$$
+
+    Con $a_{i,j}$ variables binarias. Esto equivale a $n^2$ variables binarias y $n+1$ restricciones.
+
+    Algunos problemas en los que se aplica esta restricción son en la planificación de rutas de vehículos, entre estos el problema del viajante; en diseño de circuitos electrónicos, cuando se está diseñando sistemas donde los componentes deben estar conectados en un ciclo (como en ciertos tipos de osciladores o buses de comunicación); o en la biología computacional para la reconstrucción de ciclos genómicos.\\
+    
+    \item \textbf{Element}: Esta restricción permite acceder a los elementos de un \textit{array} mediante índices definidos por otras variables, facilitando la modelización de problemas donde se necesita seleccionar entre múltiples opciones.
+
+    
+    Ejemplo de uso:
+    $$y=Element(array,x)$$
+    Equivalente en programación entera:
+        $$\forall i(i\in\{0,..n-1\}:i*a_i\leq x\leq n - a_i*(n-i)$$
+        $$y=\sum_{i=0}^{n-1}a_i*array[i]$$
+
+    Donde $n$ es la cantidad de elementos que tiene el array y $a_0,a_1,...a_{n-1}$ son variables binarias. Esto equivale a $2n+1$ restricciones.
+
+    Algunos problemas en los que se aplica esta restricción son la asignación condicional de costos, donde el costo de una operación depende del índice de un recurso seleccionado; o problemas de almacenamientos donde haga falta determinar el lugar o contenedor donde almacenar un objeto basándose en índices de inventario.\\
+    
+    \item \textbf{Cumulative}: Se utiliza para gestionar recursos limitados en el tiempo, asegurando que las demandas no excedan la capacidad disponible en cada momento.
+    
+    Ejemplo de uso:
+    $$Cumulative(x,d,r, c)$$
+    Donde $x$ es el conjunto de variables, $d$ las duraciones de las tareas, $r$ los recursos que requiere una tarea y $c$ la capacidad máxima de tareas que se pueden hacer simultáneamente.
+    Equivalente en programación entera:
+    $$\forall t \in \{1,2,..h\}:\sum_{i=1}^nx_{it}*r_i\leq c$$
+    $$\forall i \in \{1,2,..n\}:\sum_{t=1}^hx_{it}\leq d_i$$
+    Donde $h$ es la máxima duración en la que pueden hacerse todas las tareas, $n$ es la cantidad de tareas, $c$ es la capacidad, $d_1,d_2,...,d_n$ son las duraciones de cada tarea, $r_1,r_2,..,r_n$ son los recursos que requiere consumir la tarea $i$ y $x_{it}:i\in\{1,2,...,n\},t\in\{1,2,...,h\}$ son variables binarias que representan realizar la tarea i en el momento j.
+
+    Esta restricción se puede usar en problemas de planificación de tareas, de horarios y de proyectos; en problemas de gestión de ancho de banda en una red, en control de uso de recursos naturales, en optimización de consumo energético, entre muchos otros ejemplos.\\
+    
+    \item \textbf{Table}: Permite definir restricciones basadas en una tabla predefinida que especifica combinaciones válidas de valores para un conjunto de variables. Esto es útil para modelar tuplas y relaciones complejas entre variables.
+    Ejemplo de uso:
+    $$Table(x,D)$$
+    Donde $x$ es un conjunto ordenado de variables y $D$ son los posibles pares enlazados que pueden tener los elementos de x. 
+    Equivalente en programación entera:
+    $$\sum_{i=1}^{|D|}a_{i}=1$$
+    $$\forall j(1\leq j\leq n):x_j=\sum_{i=1}^{|D|}a_i*d_{ij}$$
+    Donde $d_ij$ es el valor del $j-$ésimo componente del $i-$ésimo elemento de $D$ y $a_1,a_2,...,a_n$ son variables binarias.
+
+    Algunos ejemplos de uso de esta restricción son en pn problemas de diseño o ensamblaje de productos, donde ciertas marcas sólo son compatibles con otras específicas; en problemas de asignación, donde una o más tareas sólo pueden ser realizadas por ciertos trabajadores; o problemas logísticos, donde ciertos productos sólo pueden ser transportados en tipos específicos de transporte.
+    
+\end{itemize}
+
+Para evidenciar la utilidad y comodidad a la hora de representar problemas de las restricciones planteadas anteriormente, algunas de estas serán usadas en el siguiente capítulo a la hora de modelar los diferentes problemas que serán analizados. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  EXPLICACIÓN DEL CÓDIGO                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Implementación}
+
+Para llevar a cabo la comparación entre ambos paradigmas, fueron utilizadas las siguientes clases de problemas:
+\begin{itemize}
+\item \textbf{K-Coloración}: determinar el número cromático de un grafo, en otras palabras, la menor cantidad de colores necesarios para colorear sus vértices sin que dos vértices vecinos (unidos por una arista) tengan el mismo color.\\
+
+Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.\\
+
+Modelación IP:
+
+$$min: \sum_{k=1}^nc_k$$
+$$s.a.$$
+$$(I): \forall i: \sum_{k=1}^nx_{ik}=1$$
+$$(II): \forall i\forall j \forall k: x_{ik}+x_{jk} \leq 2-a_{ij}$$
+$$(III): \forall k: \sum_{i=1}^nx_{ik} -n*c_k\leq 0$$
+$$\forall i\forall k: x_{ik}\in\{0,1\}$$
+$$\forall k: c_{k}\in\{0,1\}$$
+
+Donde $x_{ik}$ indica si el nodo $i$ pertenece o no al color $k$, $c_k$ dicta si el color $k$ es usado o no. La restricción $(I)$ obliga a que cada nodo esté en uno y solo un color. La restricción $(II)$ evita que dos nodos enlazados por una arista pertenezcan al mismo color. La restricción $(III)$ hace que, si un nodo está en un color $k$, el color cuente como utilizado. Si bien no se expone como restricción que todo color no usado debe ser 0, la propia minimización se encarga de anular aquellos colores que no se usen.\\
+
+Modelo CSP:
+
+$$min: c$$
+$$s.a.$$
+$$(I):\forall <i,j> \in E: x_i\neq x_j$$
+$$(II):\forall i: x_i\leq c$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Donde $x_i$ es el color del nodo $i$, $c$ es el número de colores usados, la restricción $(I)$ evita que dos nodos estén en el mismo color y la restricción $(II)$ iguala $c$ al número del color más alto.
+
+
+\item \textbf{Traveling Salesman Problem (TSP)}: Dado un grafo ponderado completo, encontrar el ciclo simple que pase por todos los nodos tal que la suma de aristas sea mínima.
+
+Sea un grafo completo de $n$ nodos donde $a_{ij}$ es el costo de la arista $<i,j>$.\\
+
+Modelo IP:
+
+$$min: \sum_{i=1}^n\sum_{j=1}^n x_{ij}a_{ij}$$
+$$(I):\forall i: \sum_{j=1}x_{ij}=1$$
+$$(II):\forall j: \sum_{i=1}x_{ij}=1$$
+$$(III):\forall i,j (i\neq j\neq1):u_i-u_j+n*x_{ij}\leq n-1$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i: u_i\in \mathbb{N}$$
+
+Donde $x_{ij}$ indica se irá de la ciudad $i$ a la ciudad $j$; y $u_i$ indica el orden en el que será visitada la ciudad $i$. La restricción $(I)$ indica que cada ciudad será visitada exactamente una vez, la restricción $(II)$ representa que la salida de una ciudad será única y la restricción $(III)$ obliga a cada ciudad a estar antes de la siguiente.\\
+
+Modelo CSP:
+
+$$min:\sum_{i=1}^n v_i$$
+$$s.a.$$
+$$(I):Circuit(x_1,x_2,...x_n)$$
+$$(II):\forall i:v_i=Element(x_i,a_{i1},a_{i2},...,,a_{in})$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Donde $x_i$ indica la ciudad que será visitada después de $i$ y $v_i$ el costo de hacer el viaje que parte de $i$. La restricción $(I)$ crea un ciclo halmintoneano con las variables $x_1,x_2,...,x_n$, y la restricción $(II)$ iguala $v_i$ al costo de viajar desde la ciudad $i$ a la ciudad $x_i$.
+
+\item \textbf{Bin Packing}: Dado una cantidad de objetos de diferentes tamaños, determinar el menor número de agrupaciones que se pueden formar tal que la suma total dentro de un grupo no exceda cierto valor.
+
+Sean $a_1, a_2,...a_n$ los tamaños de los objetos y C la capacidad de un bin.\\
+
+Modelo IP:
+$$min:\sum b_i$$
+$$s.a.$$
+$$(I): \forall i: \sum_{j=1}^n x_{ij}*a_i\leq C$$
+$$(II):\forall j:\sum_{i=1}^n x_{ij} -n*b_j\leq0$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall j: b_j\in \{0,1\}$$
+
+Donde $x_{ij}$ indica la pertenencia o no del elemento $i$ al conjunto $j$ y $b_j$ indica el uso del j\_ésimo bin. La restricción $(I)$ evita que se supere la capacidad de un bin y la restricción $(II)$ obliga a señalar un bin como usado si existe al menos 1 elemento que pertenezca a dicho bin.\\
+
+Modelo CSP:
+$$min: b$$
+$$s.a.$$
+$$cumulative([x_1,...,x_n],[1,..,1],[a_1,...a_n],C)$$
+$$\forall i: x_i+1\leq b$$
+$$\forall i: x_i\in \mathbb{N}$$
+
+Aquí, el problema de BinPacking, se puede ver como un problema de producción, donde un bin es equivalente a una unidad de tiempo, la pertenencia de cada elemento a un único bin se reduce a que su duración solo es de 1, el tamaño de cada elemento es la cantidad de recursos que consume y $C$ es la máxima cantidad de recursos que se pueden consumir al mismo tiempo. Bajo esta interpretación, $x_i$ representa el momento en que empezó la tarea $i$ (y, por tanto, $x_i+1$ es el bin al que pertenece el elemento $i$) y $b$ es el tiempo óptimo total, y por tanto, representa el total de bins utilizados.
+
+\item \textbf{Portfolio}: Dado un conjunto, determinar la combinación de cierta cantidad de subconjuntos de determinado tamaño que minimice la intersección 2 a 2 de dichos conjuntos.
+
+Sea $n$ la cantidad de elementos del conjunto, $b$ la cantidad de subconjuntos y $r$ el tamaño de los subconjuntos.\\
+
+Modelo IP:
+$$min \sum_{i=0}^n\sum_{j=0}^b\sum_{k=0}^by_{ijk}$$
+$$s.a.$$
+$$(I):\forall j:\sum_{i=0}^n x_{ij}=r$$
+$$(II):\forall i \forall j \forall k(k\neq j):x_{ij}+x_{ik}-y_{ijk}\leq1$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i\forall j\forall k: y_{ijk}\in\{0,1\}$$
+
+Donde $x_{ij}$ representa que el elemento $i$ pertenece al subconjunto $j$, y el elemento $y_{ijk}$ indica que el subconjunto $j$ y el subconjunto $k$ tienen al elemento i en común. La restricción $(I)$ restringe la cardinalidad de los subconjuntos a $r$, mientras que la restricción $(II)$ calcula la cantidad de intersecciones dos a dos que existen.\\
+
+Modelo CSP:
+$$min \sum_{i=0}^n c_i$$
+$$s.a.$$
+$$ (I):\forall j:global\_cardinality(r,x_{1j},x_{2j}...,x_{nj})$$
+$$ (II):\forall i:c_i=element(\sum_{j=0}^b x_{ij},0,0,1...,\binom{b}{2})$$
+$$\forall i\forall j: x_{ij}\in\{0,1\}$$
+$$\forall i: c_i\in \mathbb{N}$$
+
+Donde $x_{ij}$ representa que el elemento $i$ pertenece al subconjunto $j$, y $c_i$ representa la cantidad de coincidencias dos a dos del elemento $i$. La restricción $(I)$ restringe la cardinalidad de los subconjuntos a $r$, mientras que la restricción $(II)$ calcula la cantidad de intercepciones dos a dos que existen para el elemento $i$ y se las asigna a $c_i$. Si el elemento $i$ está presente en $p$ subconjuntos, entonces hay $\binom{p}{2}$ intercepciones dos a dos.
+
+\item \textbf{Max-Clique}: hallar el mayor conjunto de vértices de un grafo tal que para todo par de vértices hay una arista que los une.
+
+Sea un grafo $<V,E>$, de $n$ nodos ($|E|=n$), donde $a_{ij}=1$ si hay una arista entre el nodo $i$ y el nodo $j$ ($<i,j>\in E$), de lo contrario, $a_{ij}=0$.\\
+
+Modelo IP:
+$$max \sum_{i=0} x_i$$
+$$s.a.$$
+$$(I):\forall i,j: x_i+x_j-a_{ij}\leq 1$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Modelo CSP:
+$$max \sum_{i=0} x_i$$
+$$s.a.$$
+$$(I):\forall <i,j> \in E:Table([x_i,x_j],[[0,0],[1,0],[0,1]])$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Donde, en ambos casos, $x_i$ indica si el nodo $i$ es parte del clique de mayor tamaño y la restricción $(I)$ prohíbe escoger a la vez nodos que no estén conectados entre sí.
+
+\item \textbf{Set Cover}: Dado un conjunto y una lista de subconjuntos de este, encontrar la menor cantidad entre los subconjuntos cuya unión resulte en el conjunto original.
+
+Dado un conjunto de $n$ elementos y m subconjuntos del mismo. Sea $a_ij=1$ si el elemento i-ésimo pertenece al subconjunto j-ésimo. El modelo usado por ambos paradigmas:
+
+$$min \sum_{i=0}^m x_i$$
+$$s.a.$$
+$$(I) \forall i:\sum_{j=0}^mx_{j}*a_{ij}\geq1$$
+$$\forall i: x_i\in\{0,1\}$$
+
+Donde $x_j$ representa escoger o no el conjunto j-ésimo en la cobertura mínima.
+
+\item \textbf{Vehicle Routing Problem(VRP)}:  Hallar el conjunto óptimo de rutas para una flota de vehículos que debe satisfacer las demandas de un conjunto dado de clientes.
+
+Para esta instancia de VRP, se decidió analizar el caso donde hay un almacén, varios puntos donde hay que entregar una determinada cantidad de objetos de un solo viaje, contando con cierta cantidad de camiones.\\
+
+Sea $a_i$ la demanda del i-ésimo punto ($a_0=0$ por ser el almacén), $n$ la cantidad de puntos, $c_{ij}$ el costo de ir del punto $i$ al punto $j$, $b$ la cantidad de camiones. La modelación seguida por ambos paradigmas es:
+
+$$min \sum_{i=0}^n\sum_{j=0}^n\sum_{k=0}^bc_{ij}*x_{ijk}$$
+$$s.a.$$
+$$(I):\forall i(i\neq0):\sum_{j=0}^n\sum_{k=0}^bx_{ijk}=1$$
+$$(II):\forall i\forall k :\sum_{j=0}^nx_{ijk}-\sum_{j=0}^nx_{jik}=0$$
+$$(III):\forall k:\sum_{i=0}^nx_{0ik}\geq1$$
+$$(IV):\forall k:\sum_{i=0}^nx_{i0k}\geq1$$
+$$(V):\forall i\forall j\forall k ((j\neq i\neq0)):o_i\leq o_j+n*(1-x_{ijk})$$
+$$\forall i\forall j\forall k:x_{ijk}\in\{0,1\}$$
+$$\forall i\forall j\forall k:o_{i}\in\mathbb{N}$$
+
+Donde $x_{ijk}$ representa que el vehículo k irá del punto i al punto j y $o_i$ indica el orden en que se visitará el nodo $i$. La restricción $(I)$ asegura la visita de todos los puntos, la restricción $(II)$ obliga a que los camiones entren en todo punto la misma cantidad de veces que salen. Las restricciones $(III)$ y $(IV)$ aseguran ir y regresar a la base; y la restricción $(V)$ evita subciclos.
+
+
+\item \textbf{The Job Shop Problem (JSP)}: Hallar la mínima cantidad de tiempo que hace falta para realizar un conjunto de trabajos sin que estos se solapen. Cada trabajo está caracterizado por un conjunto de tareas, las cuales deben hacerse en máquinas específicas.\\
+
+Dado $n$ trabajos y $q$ máquinas, sea $d_{ij}$ la duración de la tarea j-ésima del trabajo i-ésimo y $m_{ij}$ la máquina en la cual debe realizarse y sea $h=(\sum_{i=0}^n\sum_{j=0}d_{ij})$ la suma de todas las duraciones.\\
+
+Modelo IP:
+
+$$min: y$$
+$$s.a.$$
+$$(I):\forall i \forall j: x_{ij}-x_{i(j+1)} \leq d_{ij}$$
+$$(II):\forall i \forall j \forall k \forall l(m_{ij}=m_{kl}): x_{ij}+t_{ij}-x_{kl} \leq \alpha_{ijkl}*h$$
+$$(III):\forall i \forall j \forall k \forall l(m_{ij}=m_{kl}): x_{kl}+t_{kl}-x_{ij} \leq (1-\alpha_{ijkl})*h$$
+$$\forall i\forall j:x_{ij}+d_{ij}\leq y$$
+$$\forall i\forall j: x_{ij}\in\mathbb{N}$$
+$$y\in\mathbb{N}$$
+$$\forall i\forall j\forall k\forall l:\alpha_{ijkl}\in\{0,1\}$$
+
+Donde $y$ representa el tiempo mínimo de realización de todas las tareas, $x_{ij}$ es el tiempo de inicio de la tarea $j$ del trabajo $i$ y $\alpha_{ijkl}$ indica si la tarea $j$ del trabajo $i$ se realizará después de la tarea $l$ del trabajo $k$. La restricción (I) permite respetar el orden de las tareas de un mismo trabajo, la restricción $(II)$ Y $(III)$ evita solapamientos en una misma máquina.\\
+
+Modelo CSP:
+$$min: y$$
+$$s.a.$$
+$$(I):\forall i \forall j: x_{ij}-x_{i(j+1)} \leq d_{ij}$$
+$$(II): \forall p: cumulative([x_{ij}|m_{ij}=p],[d_{ij}|m_{ij}=p],[1,..,1],1)$$
+$$\forall i\forall j:x_{ij}+d_{ij}\leq y$$
+$$\forall i\forall j: x_{ij}\in\mathbb{N}$$
+$$y\in\mathbb{N}$$
+
+Este modelo, a diferencia del de programación entera, se aprovechó de las bondades de la restricción $cumulative$, permitiendo asegurar de forma más intuitiva los intervalos.
+
+
+\end{itemize}
+
+Para la modelación de cada problema, se realizó un modelo por cada paradigma. Para esto se utilizó Ortools, que es un paquete de software de código abierto desarrollado por Google para resolver problemas complejos de optimización. Ortools facilita la comparación entre ambos paradigmas al ofrecer un entorno flexible y accesible para el modelado y la resolución de problemas. Para resolver los modelos de programación entera se usó la biblioteca pywraplp, mientras que para resolver los modelos de la programación de satisfacción de  restricciones se utilizó cp-model.\\
+
+Para cada clase de problema, una vez implementada la solución genérica en ambos paradigmas, se simulan diferentes instancias de la clase y se guardan los tiempos empleados. Una vez con los tiempos medidos, se agrupan los problemas según propiedades a analizar, y se investiga una posible correlación entre el desempeño de cada solución y la propiedad.
+
+\chapter{Resultados}
+
+De forma general, en los problemas analizados, el paradigma de programación de satisfacción de restricciones fue capaz de alcanzar el óptimo en menos tiempo que el paradigma de programación en enteros para entradas más grandes. Si analizamos cada problema de forma individual:
+
+\begin{itemize}
+    \item \textbf{K-Coloración (Figura \ref{fig:K-Colorability})}: Si bien se puede notar una correlación entre el número de vértices y el desempeño de la programación entera, la evidencia apunta que el principal causante del mal desempeño de la programación entera es el propio número cromático.
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{K-Colorability.png}
+    \caption{Resultados obtenidos en K-Coloración: La programación entera mostró un desempeño ineficiente, afectada principalmente por el número cromático del grafo.}
+    \label{fig:K-Colorability}
+    \end{figure}
+
+\newpage
+    
+    \item \textbf{Traveling Salesman Problem (Figura \ref{fig:TSP})}: En este problema se puede evidenciar cómo los casos promedio y peores casos del viajante son mayores en el paradigma de programación entera. Los picos alcanzados demuestran una gran ineficiencia de forma general para el paradigma de la programación entera.
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{TSP.png}
+    \caption{Resultados obtenidos en el problema del viajante: La programación entera tuvo un desempeño significativamente peor en los peores casos, con picos de ineficiencia.}
+    \label{fig:TSP}
+    \end{figure}
+
+\newpage
+
+    \item \textbf{Bin Packing (Figura \ref{fig:BinPacking})}: La única correlación mostrada fue entre la eficiencia temporal y el número de objetos. La capacidad del bin y el número óptimo de bins no mostraron signos de correlación. Nuevamente, se aprecia el mejor rendimiento del paradigma de programación de restricciones. 
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{BinPacking.png}
+    \caption{Resultados obtenidos en BinPacking: La programación de restricciones superó consistentemente a la programación entera en eficiencia temporal.}
+    \label{fig:BinPacking}
+    \end{figure}
+
+\newpage
+
+    \item \textbf{Set Cover (Figura \ref{fig:SetCover})}: En este problema, si bien el rendimiento de la programación entera fue mejor, la diferencia fue constante, y se puede considerar que ambos tuvieron un buen desempeño.
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{SetCover.png}
+    \caption{Resultados obtenidos en SetCover: Ambos paradigmas tuvieron un desempeño similar, con una ligera ventaja para la programación entera en tiempo constante.}
+    \label{fig:SetCover}
+    \end{figure}
+
+\newpage
+
+    \item \textbf{Clique máximo (Figura \ref{fig:Clique})}: Los resultados son bastante inestables en este tipo de problemas, y no hay una correlación clara entre el rendimiento de los paradigmas y los parámetros del problema. Aunque es fácil notar un mejor rendimiento de forma general del paradigma de satisfacción de restricciones. 
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{Clique.png}
+    \caption{Resultados obtenidos en clique máximo: Resultados inestables en ambos paradigmas, pero el paradigma de restricciones fue más eficiente en promedio.}
+    \label{fig:Clique}
+    \end{figure}
+
+\newpage
+
+    \item \textbf{Portfolio (Figura \ref{fig:Portfolio})}: Los resultados de la programación entera en este problema no fueron nada viables, ya que para parámetros muy bajos el desempeño crece de forma exponencial, haciendo imposible analizarlo para casos con más de 7 subconjuntos.
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{Portfolio.png}
+    \caption{Resultados obtenidos en Portfolio: La programación entera no fue viable para problemas con más de siete subconjuntos debido al crecimiento exponencial del tiempo.}
+    \label{fig:Portfolio}
+    \end{figure}
+
+\newpage
+
+    \item \textbf{Enrutamiento de vehículos (Figura \ref{fig:VPR})}: Si bien para un vehículo la diferencia entre los resultados no son notables, para dos o más transportes la programación entera ha tenido picos más altos de forma reiterada, que crecen a medida que aumenta el número de puntos de distribución.
+    \begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{VPR.png}
+    \caption{Resultados obtenidos en el problema de enrutamiento de vehículos: La programación entera mostró picos de ineficiencia al incrementar el número de puntos de distribución y vehículos.}
+    \label{fig:VPR}
+    \end{figure}
+
+\newpage
+    
+    \item \textbf{The Job Shop Problem}: La programación entera tuvo problemas significativos de escalabilidad, haciendo impracticable su uso en casos con múltiples tareas y máquinas. Para 4 trabajos de 4 tareas en solo una máquina; este paradigma demoró 4 horas en alcanzar el óptimo, lo cual hizo imposible la graficación de los resultados.
+
+
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                       CONCLUSIONES                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Conclusiones}
+
+La investigación comparativa entre la programación entera (IP) y la programación de satisfacción de restricciones (CSP) evidencia que cada paradigma tiene fortalezas particulares dependiendo del tipo de problema analizado y las características de las instancias consideradas. Se debe tener en cuenta que la experimentación solo contó con algunos de los problemas que estas técnicas permiten resolver, con dos implementaciones que se escogieron por tener un marco común. Existen muchos otros problemas que valen la pena explorar por ambas vías y que son frecuentes en la vida cotidiana, a la vez que existen múltiples solucionadores que cada día se van actualizando con cada nuevo descubrimiento. \\
+
+En cuanto a desempeño general, en problemas con un número elevado de restricciones y gran cantidad de variables, el paradigma de satisfacción de restricciones demostró ser más eficiente, alcanzando soluciones óptimas en menos tiempo; y en cuanto a escalabilidad y eficiencia, el paradigma CSP demostró ser más adecuado para problemas que requieren flexibilidad y capacidad de modelado más natural y declarativo. \\
+
+La programación entera, aunque útil, mostró un desempeño más limitado, especialmente en instancias complejas y de gran escala. La programación entera sigue siendo una herramienta poderosa, pero su eficiencia depende en gran medida de la formulación del modelo y las técnicas empleadas, como ramificación y planos cortantes.\\
+
+En conclusión, el paradigma de programación de satisfacción de restricciones, apoyado en herramientas como Ortools, resulta una alternativa eficiente y robusta frente a la programación entera, especialmente en problemas complejos y de gran escala. Sin embargo, la decisión entre paradigmas debe considerar las características específicas del problema y los recursos computacionales disponibles.\\
+
+Hay varias direcciones para futuros trabajos que pueden mejorar y expandir los resultados obtenidos. Por un lado, se exhorta a probar diferentes solucionadores a aquellos ofrecidos por Ortools, o bien probar diferentes problemas a los planteados en este trabajo. Estos paradigmas, lejos de ser incompatibles, ha habido numerosas referencias a modelos híbridos que permitan aprovechar las ventajas que ambos ofrecen, por lo que un posible camino a seguir sea, o bien evaluar el rendimiento de los modelos híbridos o el desarrollo de uno propio. También, estos paradigmas cuentan con un gran número de heurísticas aplicables que permiten mejorar el rendimiento de los algoritmos base, por lo que se sugiere estudiar a fondo la viabilidad y el impacto de dichas heurísticas.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                       BIBLIOGRAFÍA                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+
+\begin{thebibliography}{8}
+
+
+\bibitem{Williams}
+H. P. Williams, \textit{Logic and Integer Programming}, Springer, New York, 2009.
+
+\bibitem{Hooker}
+John N Hooker, H. P. Williams, \textit{Handbook on modelling for discrete optimization}, Springer, New York, 2006.
+
+
+\bibitem{consistencia}
+Frederick S. Hillier \textit{Constraint-Based Scheduling: Applying Constraint Programming to Scheduling Problems}, Springer, New York, 2001.
+
+
+\bibitem{Luciano}
+García Garrido Luciano \textit{Introducción a la Teoría de Conjuntos y a la Lógica Matemática}, Editorial Félix Varela, La Habana, 2002
+
+\bibitem{articulo}
+Alexander Bockmayr, Tomas Kasper, \textit{A Unifying Framework for Integer and Finite Domain Constraint Programing}, Max Planck Institute for Informatics \textbf{2}(5), 99--110 Germany (1997)
+
 \end{thebibliography}
+
+\end{document}
+
 
 \end{document}
