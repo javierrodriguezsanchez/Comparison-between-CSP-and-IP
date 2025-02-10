@@ -12,7 +12,7 @@ def solve(problem):
     for i in range(n):
         for j in range(i + 1, n):
             if problem.aristas[i][j] == 0:  # No hay conexión entre i y j
-                model.Add(x[i] + x[j] <= 1)  # No pueden estar ambos en el clique
+                model.AddAllowedAssignments([x[i], x[j]], [(0,0),(1,0),(0,1)])# No pueden estar ambos en el clique
     
     # Maximizar la suma de las variables x (número total de nodos en el clique)
     model.Maximize(sum(x))

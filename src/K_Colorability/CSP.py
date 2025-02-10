@@ -5,31 +5,25 @@ def solve(problem):
     model = cp_model.CpModel()
     
     n = problem.vertices
-    x = {}
+    x = []
 
-    # Crear variables: x[i, j] es True si el vértice i tiene el color j
+    # Crear variables: x[i] es el color de i
     for i in range(n):
-        for j in range(n):
-            x[i, j] = model.NewBoolVar(f'x[{i},{j}]')
-
-    # Restricción: Cada vértice debe tener exactamente un color
-    for i in range(n):
-        model.AddExactlyOne(x[i, j] for j in range(n))
+            x.append(model.NewIntVar(1,n,f'x[{i}]'))
 
     # Restricción: Dos vértices adyacentes no pueden tener el mismo color
     for i, j in problem.aristas:
-        for k in range(n):
-            model.Add(x[i, k] + x[j, k] <= 1)
+            model.Add(x[i] != x[j])
 
     # Variable para contar el número total de colores utilizados
-    y = [model.NewBoolVar(f'y[{j}]') for j in range(n)]
+    y = model.NewIntVar(1,n,'y')
     
     # Relación entre los colores utilizados y los vértices coloreados
-    for j in range(n):
-        model.Add(sum(x[i, j] for i in range(n)) <= n*y[j])
+    for i in range(n):
+        model.Add(x[i] <= y)
 
     # Función objetivo: minimizar el número de colores utilizados
-    model.Minimize(sum(y[j] for j in range(n)))
+    model.Minimize(y)
 
     # Resolver el modelo
     solver = cp_model.CpSolver()
@@ -39,25 +33,8 @@ def solve(problem):
     elapsed_time = time.time() - start_time
 
     if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
-        colors = [
-            next(j for j in range(n) if solver.Value(x[i, j]) == 1)
-            for i in range(n)
-        ]
-
-        correct_assignment = {}
-        value = 1
-
-        for i in range(n):
-            if colors[i] in correct_assignment:
-                colors[i] = correct_assignment[colors[i]]
-                continue
-            correct_assignment[colors[i]] = value
-            colors[i]=value
-            value += 1
-
-        
         return {
-            'x': colors,
+            'x': [solver.value(i)+1 for i in x],
             'status': 'OK',
             'result': solver.ObjectiveValue(),
             'time': elapsed_time,

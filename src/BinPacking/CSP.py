@@ -8,27 +8,28 @@ def solve(problem):
     model = cp_model.CpModel()
 
     # Variables de decisión
-    # x[i][j] = 1 si el objeto i está en el bin j, 0 en caso contrario
-    x = {}
+    # x[i]= bin en el que esta
+    x = []
     for i in range(num_bins):
-        for j in range(num_bins):
-            x[i, j] = model.NewBoolVar(f'x_{i}_{j}')
+        x.append(model.NewIntVar(0,len(problem.objects), f'x_{i}'))
 
-    # y[j] = 1 si el bin j es utilizado, 0 si está vacío
-    y = {}
-    for j in range(num_bins):
-        y[j] = model.NewBoolVar(f'y_{j}')
+    # y = tamaño de bins
+    y = model.NewIntVar(0,len(problem.objects),f'b')
+
+    interval_x = []
+    for i in range(num_bins):
+        # Crear las tareas como intervalos
+        interval_x.append(model.NewIntervalVar(x[i], 1, x[i] + 1, 'interval_x'))
 
     # Restricción de problem.capacity para cada bin
-    for j in range(num_bins):
-        model.Add(sum(problem.objects[i] * x[i, j] for i in range(num_bins)) <= problem.capacity * y[j])
+    model.AddCumulative(interval_x, problem.objects, problem.capacity)
 
     # Restricción de asignación única: cada objeto debe estar en un solo bin
     for i in range(num_bins):
-        model.Add(sum(x[i, j] for j in range(num_bins)) == 1)
+        model.Add(x[i]+1 <= y)
 
     # Función objetivo: minimizar el número de bins utilizados
-    model.Minimize(sum(y[j] for j in range(num_bins)))
+    model.Minimize(y)
 
     # Crear el solver
     solver = cp_model.CpSolver()
@@ -38,17 +39,9 @@ def solve(problem):
 
     # Mostrar resultados
     if status == cp_model.OPTIMAL:
-        values = {}
-        count = 1
-        for j in range(num_bins):
-            if solver.Value(y[j]) == 1:
-                values[j] = count
-                count+=1
         
-        solution = [[values[j] for j in range(num_bins) if solver.Value(x[i, j]) == 1][0] for i in range(num_bins)]
-
         return {
-            'x': solution,
+            'x': [solver.value(i)+1 for i in x],
             'status': 'OK',
             'result': solver.ObjectiveValue(),
             'time': elapsed_time,
